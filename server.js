@@ -20,6 +20,7 @@ io.emit('position',id1,x,y)
 
 
 
+        
 })
 })
 http.listen(3000, function(){
