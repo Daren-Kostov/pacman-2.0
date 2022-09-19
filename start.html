@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>body {margin:0;overflow:hidden} canvas { touch-action: none; }</style>
+	</head>
+	<body onload="init()">
+        <div id="qwerty">
+		<canvas id="canvas-id" />
+		<script>
+
+          
+          
+
+          
+var canvas = document.getElementById("canvas-id");
+canvas.width  = window.innerWidth
+canvas.height = window.innerHeight
+var context = canvas.getContext("2d");
+
+   
+      
+          
+for(i=0;i<10;i++){
+  
+  
+  
+}          
+          
+var mouseX = 0;
+var mouseY = 0;
+
+var fingerX = 0;
+var fingerY = 0;
+          
+var penX = 0;
+var penY = 0;
+          
+var key_left	= 37;
+var key_up		= 38;
+var key_right	= 39;
+var key_down	= 40;
+var key_a		= 65;
+var key_z		= 90;
+
+var isKeyPressed=[];
+for(i=0;i<256;++i)
+	isKeyPressed.push(0);
+
+
+var reqAnimationFrame =
+	window.requestAnimationFrame ||
+	window.mozRequestAnimationFrame ||
+	window.webkitRequestAnimationFrame ||
+	window.msRequestAnimationFrame ||
+	function(callback) {
+		setTimeout(callback, 1000/30);
+	}
+const times = [];
+let fps;
+            
+function redraw() {
+      window.requestAnimationFrame(() => {
+    const now = performance.now();
+    while (times.length > 0 && times[0] <= now - 1000) {
+      times.shift();
+    }
+    times.push(now);
+    fps = times.length;
+  });
+    //if(fps>=59){
+    	draw();
+    //}
+	reqAnimationFrame(redraw);
+}
+const times2 = [];
+let tps;
+function callupdate() {
+
+        const now = performance.now();
+    while (times2.length > 0 && times2[0] <= now - 1000) {
+      times2.shift();
+    }
+    times2.push(now);
+    tps = times2.length;
+    //if(tps>=59){
+	update();
+    //}
+	setTimeout(callupdate, 10);
+
+}
+
+function areColliding(Ax, Ay, Awidth, Aheight, Bx, By, Bwidth, Bheight) {
+	if (Bx <= Ax + Awidth) {
+		if (Ax <= Bx + Bwidth) {
+			if (By <= Ay + Aheight) {
+				if (Ay <= By + Bheight) {
+					return 1;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+            
+
+function CirclesAreColliding(x1,y1,r1,x2,y2,r2){
+if(Math.pow(x1-x2,2)+Math.pow(y1-y2,2)<Math.pow(r1+r2,2)){ 
+return 1;
+}
+return 0;
+}
+    
+function DegreesToRadians(degrees){
+  return degrees * (Math.PI/180);
+}  
+function toggleFullScreen() {
+  if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+}
+          
+//https://stackoverflow.com/questions/17428587/transposing-a-2d-array-in-javascript
+function transpose(matrix) {
+  const rows = matrix.length, cols = matrix[0].length;
+  const grid = [];
+  for (let j = 0; j < cols; j++) {
+    grid[j] = Array(rows);
+  }
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      grid[j][i] = matrix[i][j];
+    }
+  }
+  return grid;
+}
+          
+          
+function init() {
+	window.addEventListener("pointermove", function(e) {
+        switch(e.pointerType){
+          case "mouse":
+		    mouseX=e.pageX-canvas.offsetLeft;
+		    mouseY=e.pageY-canvas.offsetTop;
+            break
+          case "touch":
+		    fingerX=e.pageX-canvas.offsetLeft;
+		    fingerY=e.pageY-canvas.offsetTop;
+            break
+          case "pen":
+		    penX=e.pageX-canvas.offsetLeft;
+		    penY=e.pageY-canvas.offsetTop;
+            break
+        }
+
+	});
+
+	if(typeof pointermove != "undefined")
+		window.addEventListener("pointermove", pointermove);
+	if(typeof pointerup != "undefined")
+		window.addEventListener("pointerup", function(e) {
+            e = e || window.event;
+          switch(e.pointerType){
+          case "mouse":
+		    mouseX=e.pageX-canvas.offsetLeft;
+		    mouseY=e.pageY-canvas.offsetTop;
+            break
+          case "touch":
+		    fingerX=e.pageX-canvas.offsetLeft;
+		    fingerY=e.pageY-canvas.offsetTop;
+            break
+          case "pen":
+		    penX=e.pageX-canvas.offsetLeft;
+		    penY=e.pageY-canvas.offsetTop;
+            break
+        }
+            const button=e.which;
+            const type=e.pointerType;
+            pointerup(type,button);
+        });
+    if(typeof pointerdown != "undefined")
+		window.addEventListener("pointerdown", function(e) {
+            e = e || window.event;
+          switch(e.pointerType){
+          case "mouse":
+		    mouseX=e.pageX-canvas.offsetLeft;
+		    mouseY=e.pageY-canvas.offsetTop;
+            break
+          case "touch":
+		    fingerX=e.pageX-canvas.offsetLeft;
+		    fingerY=e.pageY-canvas.offsetTop;
+            break
+          case "pen":
+		    penX=e.pageX-canvas.offsetLeft;
+		    penY=e.pageY-canvas.offsetTop;
+            break
+        }
+
+          
+            const button=e.which;
+            const type=e.pointerType;
+            pointerdown(type, button);
+        });
+    if(typeof pointerwheel != "undefined")
+		window.addEventListener("wheel", function(e) {
+    const delta = Math.sign(e.deltaY);
+    pointerwheel(delta);
+});
+    if(typeof keydown != "undefined")
+		window.addEventListener("keydown", function(e) {
+			isKeyPressed[e.keyCode]=1;
+			keydown(e.keyCode);
+		});
+	else window.addEventListener("keydown", function(e) {
+		isKeyPressed[e.keyCode]=1;
+	});
+	if(typeof keyup != "undefined")
+		window.addEventListener("keyup", function(e) {
+			isKeyPressed[e.keyCode]=0;
+			keyup(e.keyCode);
+		});
+	else window.addEventListener("keyup", function(e) {
+		isKeyPressed[e.keyCode]=0;
+	});
+
+	if(typeof draw == "undefined")
+		redraw = function() {
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			context.globalAlpha = 1;
+			context.fillStyle = "#FF0000";
+			context.font = "30px Arial";
+			context.fillText("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", 40, 40);
+		}
+
+	redraw();
+	callupdate();
+}
+function allowRightClick(value){
+  document.oncontextmenu = function() {return value;}
+}
+/*
+window.onbeforeunload = function (e) {
+    // Cancel the event
+    e.preventDefault();
+
+    // Chrome requires returnValue to be set
+    e.returnValue = 'Really want to quit?';
+};
+*/
+//Prevent Ctrl+S (and Ctrl+W for old browsers and Edge)
+document.onkeydown = function (e) {
+    e = e || window.event;//Get event
+
+    if (!e.ctrlKey) return;
+
+    var code = e.which || e.keyCode;//Get key code
+
+    switch (code) {
+        case 83://Block Ctrl+S
+        case 87://Block Ctrl+W -- Not work in Chrome and new Firefox
+        case 68://Block Ctrl+D
+            e.preventDefault();
+            e.stopPropagation();
+            break;
+    }
+};
+        </script>
+      </div>
+        <script src="socket.io/socket.io.js" ></script>
+        <script type="text/javascript" src="game.js"></script>
+
+	</body>
+</html>
