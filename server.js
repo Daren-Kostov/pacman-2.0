@@ -9,6 +9,7 @@ app.get('/', function(req, res){
 app.get('/game.js', function(req, res){
     res.sendFile(__dirname + "/game.js");
 });
+
 var id=0
 io.on("connection", function(socket){
 var id1=id

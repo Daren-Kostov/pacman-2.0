@@ -1,6 +1,5 @@
 var socket = io();
 
-
 let map=[
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -32,6 +31,7 @@ let map=[
 let mapSize=0.5;
 
 
+let score=0;
 let myX = 100, myY = 100, direction=0;
 let speed=2
 var positionsX = []
@@ -66,12 +66,21 @@ function update() {
 
 }
 
+function drawCircles(){
+ 
+  context.beginPath();
+  context.arc(5, 5, 0.25); //(x position, y position, radius)
+  context.fillStyle() = "white"; //maybe there is no ()
+  context.fill();
+  
+}
+
 function draw() {
 	// This is how you draw a rectangle
 	context.clearRect(0,0,1000,1000)
   
 	context.scale(mapSize,mapSize)
-	  
+		  
 	for(x=0;x<map.length;x++){
 		for(y=0;y<map[0].length;y++){
 			context.fillStyle="#000000"
@@ -88,9 +97,11 @@ function draw() {
 	for(var k=0;k<positionsX.length;k+=1){
     context.fillRect(positionsX[k], positionsY[k], 25, 25); 
     }
-	
+
 	context.scale(1/mapSize,1/mapSize)
-	
+
+	context.fillStyle="#00ff00"
+	context.fillText(score, 100, 100)
 	
  }
 
