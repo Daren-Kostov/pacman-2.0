@@ -13,7 +13,7 @@ app.get('/game.js', function(req, res){
 var id=0
 io.on("connection", function(socket){
 var id1=id
-console.log("doide igrach",id+1)
+console.log("Player joined",id)
 id+=1
 socket.on('position',function(x,y){
 
