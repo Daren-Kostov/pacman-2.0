@@ -81,13 +81,14 @@ function draw() {
 	// This is how you draw a rectangle
 	context.clearRect(0,0,1000,1000)
   
+			context.drawImage(block_img[1], 0, 0, 300, 300)
 	context.scale(mapSize,mapSize)
 		  
 	for(x=0;x<map.length;x++){
 		for(y=0;y<map[0].length;y++){
 					
 			context.drawImage(block_img[0], x*30, y*30, 30, 30)
-			context.drawImage(block_img[i], x*30, y*30, 30, 30)
+			context.drawImage(block_img[map[x][y]], x*30, y*30, 30, 30)
 			
 				
 		}
