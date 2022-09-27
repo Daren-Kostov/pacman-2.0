@@ -31,8 +31,8 @@ let map=[
 let block_img=[];
 
 for (i=0;i<3;i++){
-	block_img=new Image();
-	block_img.scr="orig.png"
+	block_img[i]=new Image();
+	block_img[i].scr="sprites/"+i+".png"
 }
 
 
