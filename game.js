@@ -4,9 +4,9 @@ let map=[
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -25,6 +25,15 @@ let map=[
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 	
 ]
+
+
+
+let block_img=[];
+
+for (i=0;i<3;i++){
+	block_img=new Image();
+	block_img.scr="orig.png"
+}
 
 
 
@@ -66,14 +75,7 @@ function update() {
 
 }
 
-function drawCircles(){
  
-  context.beginPath();
-  context.arc(5, 5, 0.25); //(x position, y position, radius)
-  context.fillStyle() = "white"; //maybe there is no ()
-  context.fill();
-  
-}
 
 function draw() {
 	// This is how you draw a rectangle
@@ -83,11 +85,9 @@ function draw() {
 		  
 	for(x=0;x<map.length;x++){
 		for(y=0;y<map[0].length;y++){
-			context.fillStyle="#000000"
-			if(map[x][y]==1){
-				context.fillStyle="#777777"	
-			}
-			context.fillRect(x*30,y*30,30, 30)
+					
+			context.drawImage(block_img[0], x*30, y*30, 30, 30)
+			context.drawImage(block_img[i], x*30, y*30, 30, 30)
 			
 				
 		}
@@ -101,7 +101,7 @@ function draw() {
 	context.scale(1/mapSize,1/mapSize)
 
 	context.fillStyle="#00ff00"
-	context.fillText(score, 100, 100)
+	context.fillText("my score: "+ score, 100, 100)
 	
  }
 
