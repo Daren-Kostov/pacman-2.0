@@ -23,13 +23,13 @@ for(i=0; i<3; i++){
     });
 }
 */
-    app.get('/sprites/0.png', function(req, res){
+    app.get('/0.png', function(req, res){
         res.sendFile(__dirname + "/sprites/0.png");
     });
-    app.get('/sprites/1.png', function(req, res){
+    app.get('/1.png', function(req, res){
         res.sendFile(__dirname + "/sprites/1.png");
     });
-    app.get('/sprites/2.png', function(req, res){
+    app.get('/2.png', function(req, res){
         res.sendFile(__dirname + "/sprites/2.png");
     });
 
