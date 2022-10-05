@@ -40,14 +40,11 @@ io.on("connection", function(socket){
 var id1 =id
 console.log("Player joined",id)
 id+=1
-socket.on('position',function(x,y){
-
-io.emit('position',id1,x,y)
-
-
-
-        
-})
+    for(let j=0; j<2; j++){
+        socket.on('position'+j,function(x,y){
+        io.emit('position'+j,id1,x,y)  
+        })
+    }
 })
 http.listen(3000, function(){
 console.log("server started");

@@ -46,6 +46,13 @@ setTimeout(genFloor, 500);
 
 
 
+
+let room=Math.floor(Math.random()*2)
+
+
+
+
+
 let block_img=[];
 
 for (i=0;i<3;i++){
@@ -68,7 +75,7 @@ let myX = 100, myY = 100, direction=0;
 let speed=2
 var positionsX = []
 var positionsY = []
-socket.on('position',function (id,x,y){
+socket.on('position'+room,function (id,x,y){
 positionsX[id]=x
 positionsY[id]=y
 })
@@ -94,7 +101,7 @@ function update() {
 	
 	
 	
-	socket.emit('position',myX,myY);    
+	socket.emit('position'+room,myX,myY);    
 
 }
 i
@@ -142,6 +149,7 @@ function draw() {
 	context.fillStyle="#000"
 	context.fillText(tps, 400, 100)
 	context.fillText(fps, 450, 100)
+	context.fillText(room, 500, 100)
 	
  }
 
@@ -159,6 +167,9 @@ function keydown(key) {
 			break;
 		case 65:
 			direction=3;
+			break
+		case 32:
+			direction=-1;
 	}
 	
 	
