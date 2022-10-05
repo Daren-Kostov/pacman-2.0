@@ -41,8 +41,6 @@ for (i=0;i<3;i++){
 
 
 
-let test=new Image()
-test.src="/0.png"
 
 let mapSize=0.5;
 
@@ -81,9 +79,20 @@ function update() {
 	socket.emit('position',myX,myY);    
 
 }
+i
+draw_block=[]
 
- 
+draw_block[0]= function(x, y){
+context.drawImage(block_img[0], x*30, y*30, 30, 30)
+}
 
+draw_block[1]= function(x, y){
+context.drawImage(block_img[1], x*30, y*30, 30, 30)
+}
+draw_block[2]= function(x, y){
+context.drawImage(block_img[0], x*30, y*30, 30, 30)
+context.drawImage(block_img[2], x*30, y*30, 30, 30)
+}
 function draw() {
 	context.clearRect(0,0,1000,1000)
   
@@ -93,9 +102,9 @@ function draw() {
 	for(x=0;x<map.length;x++){
 		for(y=0;y<map[0].length;y++){
 					
-			context.drawImage(block_img[0], x*30, y*30, 30, 30)
-			context.drawImage(block_img[map[x][y]], x*30, y*30, 30, 30)
-			
+			//context.drawImage(block_img[0], x*30, y*30, 30, 30)
+			//context.drawImage(block_img[map[x][y]], x*30, y*30, 30, 30)
+			draw_block[map[x][y]](x, y);
 				
 		}
 	}
