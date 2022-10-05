@@ -40,11 +40,11 @@ for (i=0;i<3;i++){
 
 
 	block_img[0]=new Image();
-	block_img[0].scr="/0.png"
+	block_img[0].src="/0.png"
 	block_img[1]=new Image();
-	block_img[1].scr="/1.png"
+	block_img[1].src="/1.png"
 	block_img[2]=new Image();
-	block_img[2].scr="/2.png"
+	block_img[2].src="/2.png"
 
 
 let test=new Image()
