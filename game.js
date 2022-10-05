@@ -29,22 +29,16 @@ let map=[
 
 
 let block_img=[];
-/*
+
 for (i=0;i<3;i++){
 	block_img[i]=new Image();
-	block_img[i].scr="/"+i+".png"
+	block_img[i].src="/"+i+".png"
 }
-*/
 
 
 
 
-	block_img[0]=new Image();
-	block_img[0].src="/0.png"
-	block_img[1]=new Image();
-	block_img[1].src="/1.png"
-	block_img[2]=new Image();
-	block_img[2].src="/2.png"
+
 
 
 let test=new Image()

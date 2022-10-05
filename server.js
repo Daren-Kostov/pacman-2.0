@@ -23,16 +23,13 @@ for(i=0; i<3; i++){
     });
 }
 */
-    app.get('/0.png', function(req, res){
-        res.sendFile(__dirname + "/sprites/0.png");
-    });
-    app.get('/1.png', function(req, res){
-        res.sendFile(__dirname + "/sprites/1.png");
-    });
-    app.get('/2.png', function(req, res){
-        res.sendFile(__dirname + "/sprites/2.png");
-    });
 
+    
+    for(let i=0; i<3; i++){
+    app.get('/'+i+'.png', function(req, res){
+        res.sendFile(__dirname + "/sprites/"+i+".png");
+    });
+    }
 
 app.get('/game.js', function(req, res){
     res.sendFile(__dirname + "/game.js");
