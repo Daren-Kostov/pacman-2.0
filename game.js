@@ -35,9 +35,11 @@ for (i=0;i<3;i++){
 	block_img[i].scr="/"+i+".png"
 }
 */
-	block_img[0]=new Image();
-	block_img[0].onload = function() { console.log("utefqwugioeewgyif"); }
 
+
+
+
+	block_img[0]=new Image();
 	block_img[0].scr="/0.png"
 	block_img[1]=new Image();
 	block_img[1].scr="/1.png"
@@ -46,7 +48,7 @@ for (i=0;i<3;i++){
 
 
 let test=new Image()
-//test.src="https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fb%2Fb6%2FImage_created_with_a_mobile_phone.png%2F1200px-Image_created_with_a_mobile_phone.png&sp=1664313043T1e83d7fceccb2f114773507ac340c443e6558e356654d32cb48af705d524b058"
+test.src="/0.png"
 
 let mapSize=0.5;
 
@@ -91,7 +93,7 @@ function update() {
 function draw() {
 	context.clearRect(0,0,1000,1000)
   
-			context.drawImage(test, 0, 0, 300, 300)
+		//	context.drawImage(test, 0, 0, 300, 300)
 	context.scale(mapSize,mapSize)
 		  
 	for(x=0;x<map.length;x++){
