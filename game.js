@@ -21,10 +21,28 @@ let map=[
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 	
 ]
+
+
+//initialize the floor texture
+const FLOOR = canvas.cloneNode();
+FLOOR.width=map.length*30
+FLOOR.height=map[0].length*30
+const FLOORcontext = FLOOR.getContext('2d');
+
+
+//generate the floor texture
+function genFloor(){
+	for(x=0;x<map.length;x++){
+		for(y=0;y<map[0].length;y++){
+			FLOORcontext.drawImage(block_img[0], x*30, y*30, 30, 30)
+		}
+	}
+}
+
+setTimeout(genFloor, 500);
 
 
 
@@ -82,9 +100,6 @@ function update() {
 i
 draw_block=[]
 
-draw_block[0]= function(x, y){
-context.drawImage(block_img[0], x*30, y*30, 30, 30)
-}
 
 draw_block[1]= function(x, y){
 context.drawImage(block_img[1], x*30, y*30, 30, 30)
@@ -93,18 +108,23 @@ draw_block[2]= function(x, y){
 context.drawImage(block_img[0], x*30, y*30, 30, 30)
 context.drawImage(block_img[2], x*30, y*30, 30, 30)
 }
+
+
+
+
+
+
 function draw() {
 	context.clearRect(0,0,1000,1000)
   
-		//	context.drawImage(test, 0, 0, 300, 300)
 	context.scale(mapSize,mapSize)
-		  
+	//draw the floor texture
+	context.drawImage(FLOOR ,0, 0, map.length*30, map[0].length*30)
+	
 	for(x=0;x<map.length;x++){
 		for(y=0;y<map[0].length;y++){
-					
-			//context.drawImage(block_img[0], x*30, y*30, 30, 30)
-			//context.drawImage(block_img[map[x][y]], x*30, y*30, 30, 30)
-			draw_block[map[x][y]](x, y);
+			if(map[x][y]!=0)
+				draw_block[map[x][y]](x, y);
 				
 		}
 	}
@@ -119,10 +139,13 @@ function draw() {
 	context.fillStyle="#00ff00"
 	context.fillText("my score: "+ score, 100, 100)
 	
+	context.fillStyle="#000"
+	context.fillText(tps, 400, 100)
+	context.fillText(fps, 450, 100)
+	
  }
 
 function keydown(key) {
-	// Show the pressed keycode in the console
 	console.log("Pressed", key);
 	switch(key){
 		case 87:

@@ -69,7 +69,7 @@ function redraw() {
   });
     //if(fps>=59){
     	draw();
-    //}
+   // }
 	reqAnimationFrame(redraw);
 }
 const times2 = [];
@@ -82,9 +82,7 @@ function callupdate() {
     }
     times2.push(now);
     tps = times2.length;
-    //if(tps>=59){
 	update();
-    //}
 	setTimeout(callupdate, 10);
 
 }
