@@ -52,36 +52,36 @@ let room=Math.floor(Math.random()*2)
 
 
 
-
+//block textures
 let block_img=[];
-
 for (i=0;i<3;i++){
 	block_img[i]=new Image();
 	block_img[i].src="/"+i+".png"
 }
 
 
+let mainMenu=true
 
 
 
 
-
-
+//map size
 let mapSize=0.5;
 
-
+//our score, coords, and speed
 let score=0;
 let myX = 100, myY = 100, direction=0;
 let speed=2
+
 var positionsX = []
 var positionsY = []
-socket.on('position'+room,function (id,x,y){
-positionsX[id]=x
-positionsY[id]=y
-})
+// socket.on('position'+room,function (id,x,y){
+// positionsX[id]=x
+// positionsY[id]=y
+// })
 
 function update() {
-	
+	if(!mainMenu){
 	
 	switch(direction){
 		case 0:
@@ -97,7 +97,7 @@ function update() {
 			myX-=speed;
 	}
 	
-	
+	}
 	
 	
 	
@@ -120,39 +120,52 @@ context.drawImage(block_img[2], x*30, y*30, 30, 30)
 
 
 
-
 function draw() {
 	context.clearRect(0,0,1000,1000)
   
-	context.scale(mapSize,mapSize)
-	//draw the floor texture
-	context.drawImage(FLOOR ,0, 0, map.length*30, map[0].length*30)
-	
-	for(x=0;x<map.length;x++){
-		for(y=0;y<map[0].length;y++){
-			if(map[x][y]!=0)
-				draw_block[map[x][y]](x, y);
-				
+	if(mainMenu){
+		for(let j=0; j<10; j++){
+			context.fillStyle="#0f0"
+			context.fillRect(j*50+80, 70, 49, 49)
+			
+			context.fillStyle="#000"
+			context.fillText(j, 50*j+100, 100)
+		
 		}
+		
+	}else{
+	
+	
+	
+		context.scale(mapSize,mapSize)
+		//draw the floor texture
+		context.drawImage(FLOOR ,0, 0, map.length*30, map[0].length*30)
+	
+		for(x=0;x<map.length;x++){
+			for(y=0;y<map[0].length;y++){
+				if(map[x][y]!=0)
+					draw_block[map[x][y]](x, y);
+				
+			}
+		}
+	
+		context.fillStyle="#ffff00"	
+		for(var k=0;k<positionsX.length;k+=1){
+	    context.fillRect(positionsX[k], positionsY[k], 25, 25); 
+	    }
+
+		context.scale(1/mapSize,1/mapSize)
+
+		context.fillStyle="#00ff00"
+		context.fillText("my score: "+ score, 100, 100)
+	
+		context.fillStyle="#000"
+		context.fillText(tps, 400, 100)
+		context.fillText(fps, 450, 100)
+		context.fillText(room, 500, 100)
+	
 	}
-	
-	context.fillStyle="#ffff00"	
-	for(var k=0;k<positionsX.length;k+=1){
-    context.fillRect(positionsX[k], positionsY[k], 25, 25); 
-    }
-
-	context.scale(1/mapSize,1/mapSize)
-
-	context.fillStyle="#00ff00"
-	context.fillText("my score: "+ score, 100, 100)
-	
-	context.fillStyle="#000"
-	context.fillText(tps, 400, 100)
-	context.fillText(fps, 450, 100)
-	context.fillText(room, 500, 100)
-	
- }
-
+}
 function keydown(key) {
 	console.log("Pressed", key);
 	switch(key){
@@ -170,8 +183,23 @@ function keydown(key) {
 			break
 		case 32:
 			direction=-1;
+	}	
+}
+
+function pointerup(){
+	if(mainMenu){
+		for(let j=0; j<10; j++){
+			if(areColliding(mouseX, mouseY, 1, 1, j*50+80, 70, 49, 49)){
+				mainMenu=false
+				room=j
+				socket.on('position'+room,function (id,x,y){
+				positionsX[id]=x
+				positionsY[id]=y
+				})
+
+			
+			}
+		}
 	}
-	
-	
-	
+
 }

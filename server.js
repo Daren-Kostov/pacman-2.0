@@ -40,7 +40,7 @@ io.on("connection", function(socket){
 var id1 =id
 console.log("Player joined",id)
 id+=1
-    for(let j=0; j<2; j++){
+    for(let j=0; j<10; j++){
         socket.on('position'+j,function(x,y){
         io.emit('position'+j,id1,x,y)  
         })
