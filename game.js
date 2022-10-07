@@ -33,11 +33,17 @@ FLOOR.height=map[0].length*30
 const FLOORcontext = FLOOR.getContext('2d');
 
 
+
+
+
+
+
 //generate the floor texture
 function genFloor(){
 	for(x=0;x<map.length;x++){
 		for(y=0;y<map[0].length;y++){
 			FLOORcontext.drawImage(block_img[0], x*30, y*30, 30, 30)
+			FLOORcontext.drawImage(block_img[map[x][y]], x*30, y*30, 30, 30)
 		}
 	}
 }
@@ -68,17 +74,17 @@ let mainMenu=true
 //map size
 let mapSize=0.5;
 
-//our score, coords, and speed
-let score=0;
+//our score, coords, and speed, and color
+let myscore=0, mycolor="#ffff00";
 let myX = 100, myY = 100, direction=0;
 let speed=2
 
-var positionsX = []
-var positionsY = []
-// socket.on('position'+room,function (id,x,y){
-// positionsX[id]=x
-// positionsY[id]=y
-// })
+
+let colors=[];
+let scores=[];
+let playerPositionsX=[];
+let playerPositionsY=[];
+
 
 function update() {
 	if(!mainMenu){
@@ -100,21 +106,17 @@ function update() {
 	}
 	
 	
-	
-	socket.emit('position'+room,myX,myY);    
+	//update our position and score with the server
+	socket.emit('player_position'+room,myX,myY);    
+	socket.emit('score'+room, myscore);    
+
+	socket.emit('color'+room, mycolor);    
 
 }
-i
+
+
 draw_block=[]
 
-
-draw_block[1]= function(x, y){
-context.drawImage(block_img[1], x*30, y*30, 30, 30)
-}
-draw_block[2]= function(x, y){
-context.drawImage(block_img[0], x*30, y*30, 30, 30)
-context.drawImage(block_img[2], x*30, y*30, 30, 30)
-}
 
 
 
@@ -122,7 +124,7 @@ context.drawImage(block_img[2], x*30, y*30, 30, 30)
 
 function draw() {
 	context.clearRect(0,0,1000,1000)
-  
+  //when in main menu
 	if(mainMenu){
 		for(let j=0; j<10; j++){
 			context.fillStyle="#0f0"
@@ -132,33 +134,33 @@ function draw() {
 			context.fillText(j, 50*j+100, 100)
 		
 		}
-		
+	//when not in main menu
 	}else{
 	
 	
 	
 		context.scale(mapSize,mapSize)
+		
+		
+		
 		//draw the floor texture
 		context.drawImage(FLOOR ,0, 0, map.length*30, map[0].length*30)
 	
-		for(x=0;x<map.length;x++){
-			for(y=0;y<map[0].length;y++){
-				if(map[x][y]!=0)
-					draw_block[map[x][y]](x, y);
 				
-			}
-		}
 	
 		context.fillStyle="#ffff00"	
-		for(var k=0;k<positionsX.length;k+=1){
-	    context.fillRect(positionsX[k], positionsY[k], 25, 25); 
+		for(var k=0;k<playerPositionsX.length;k+=1){
+	    context.fillRect(playerPositionsX[k], playerPositionsY[k], 25, 25); 
 	    }
 
 		context.scale(1/mapSize,1/mapSize)
 
+		
+		for(var k=0;k<scores.length;k+=1){
+		
 		context.fillStyle="#00ff00"
-		context.fillText("my score: "+ score, 100, 100)
-	
+		context.fillText("my score: "+ scores[k], 100, 100+25*k)
+	}
 		context.fillStyle="#000"
 		context.fillText(tps, 400, 100)
 		context.fillText(fps, 450, 100)
@@ -192,11 +194,19 @@ function pointerup(){
 			if(areColliding(mouseX, mouseY, 1, 1, j*50+80, 70, 49, 49)){
 				mainMenu=false
 				room=j
-				socket.on('position'+room,function (id,x,y){
-				positionsX[id]=x
-				positionsY[id]=y
+				//player position
+				socket.on('player_position'+room,function (id,x,y){
+				playerPositionsX[id]=x
+				playerPositionsY[id]=y
 				})
-
+				//color
+				socket.on('score'+room,function (id,score){
+				scores[id]=score
+				})
+				//color
+				socket.on('color'+room,function (id,color){
+				colors[id]=color
+				})
 			
 			}
 		}
