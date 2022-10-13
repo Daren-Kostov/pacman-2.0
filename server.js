@@ -31,34 +31,28 @@ app.get('/game.js', function(req, res){
 var id=0
 io.on("connection", function(socket){
 console.log("Player joined")
-    
+    var id1=id
+    id++
     for(let j=0; j<10; j++){
     //player positions
         socket.on('player_position'+j,function(x,y){
-        io.emit('player_position'+j,id,x,y)  
+        io.emit('player_position'+j,id1,x,y)  
         })
     //player scores
         socket.on('score'+j,function(score){
-        io.emit('score'+j,id,score)  
+        io.emit('score'+j,id1,score)  
         })
         
     //player colors
         socket.on('color'+j,function(color){
-        io.emit('color'+j,id, color)  
+        io.emit('color'+j,id1, color)  
         })
     }
     
-id++
     
     
     
     
-//when a player disconnects
-socket.on('disconnect', function () {
-
-    console.log("Player disconnected")    
-    
-})
     
     
 })

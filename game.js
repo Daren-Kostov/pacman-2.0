@@ -103,7 +103,6 @@ function update() {
 			myX-=speed;
 	}
 	
-	}
 	
 	
 	//update our position and score with the server
@@ -111,7 +110,7 @@ function update() {
 	socket.emit('score'+room, myscore);    
 
 	socket.emit('color'+room, mycolor);    
-
+	}
 }
 
 
@@ -150,6 +149,7 @@ function draw() {
 	
 		context.fillStyle="#ffff00"	
 		for(var k=0;k<playerPositionsX.length;k+=1){
+			console.log(playerPositionsX[k])
 	    context.fillRect(playerPositionsX[k], playerPositionsY[k], 25, 25); 
 	    }
 
