@@ -2,7 +2,7 @@ var socket = io();
 
 let map=[
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-	[1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1],
 	[1,0,1,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0,0,1],
@@ -12,7 +12,7 @@ let map=[
 	[1,0,1,0,0,1,0,0,0,1,0,0,1,0,1,0,0,0,0,0,1],
 	[1,0,0,0,0,1,1,1,0,1,1,1,1,0,0,0,0,0,0,0,1],
 	[1,0,1,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,0,1],
-	[1,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1],
+	[1,2,1,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1],
 	[1,0,1,0,1,1,0,1,0,0,1,1,1,0,0,0,0,0,0,0,1],
 	[1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -93,12 +93,31 @@ function update() {
 	for(x=0;x<map.length;x++){
 		for(y=0;y<map[0].length;y++){
 			if(areColliding(x*30, y*30, 30, 30, myX, myY, 25, 25)){
-				if(map[x][y]==1){
+				//if collision with wall
+				switch(map[x][y]){
+					case 1:
 						direction=-1
 						myX+= -(x*30-myX)/10
 						myY+= -(y*30-myY)/10
-				}
+						break;
+					//if collision with circle
+					case 2:
+						myscore++
+						map[x][y]=0
+						genFloor()
+				}				
 			}
+				
+				
+			for(var k=0;k<playerPositionsX.length;k+=1){
+				if(areColliding(x*30, y*30, 30, 30, playerPositionsX[k], playerPositionsY[k], 25, 25)){
+					//if another player collides with a white circle remove it from our map (the map is client side)
+					if(map[x][y]==2){
+						map[x][y]=0
+						genFloor()	
+					}
+				}
+			}		
 		}
 	}	
 
