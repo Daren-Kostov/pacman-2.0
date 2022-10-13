@@ -2,24 +2,24 @@ var socket = io();
 
 let map=[
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+	[1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1],
+	[1,0,1,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0,0,1],
+	[1,0,1,0,1,1,0,1,1,1,0,0,0,0,1,0,0,0,0,0,1],
+	[1,0,1,0,1,0,0,1,0,1,0,1,1,0,1,0,0,0,0,0,1],
+	[1,0,1,0,1,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1],
+	[1,0,1,0,0,1,0,0,0,1,0,0,1,0,1,0,0,0,0,0,1],
+	[1,0,0,0,0,1,1,1,0,1,1,1,1,0,0,0,0,0,0,0,1],
+	[1,0,1,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,0,1],
+	[1,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1],
+	[1,0,1,0,1,1,0,1,0,0,1,1,1,0,0,0,0,0,0,0,1],
+	[1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 	
@@ -75,7 +75,8 @@ let mainMenu=true
 let mapSize=0.5;
 
 //our score, coords, and speed, and color
-let myscore=0, mycolor="#ffff00";
+let myscore=0, mycolor="hsl("+(Math.random()*360)+", 100%, 50%)";
+console.log(mycolor)
 let myX = 100, myY = 100, direction=0;
 let speed=2
 
@@ -89,6 +90,19 @@ let playerPositionsY=[];
 function update() {
 	if(!mainMenu){
 	
+	for(x=0;x<map.length;x++){
+		for(y=0;y<map[0].length;y++){
+			if(areColliding(x*30, y*30, 30, 30, myX, myY, 25, 25)){
+				if(map[x][y]==1){
+						direction=-1
+						myX+= -(x*30-myX)/10
+						myY+= -(y*30-myY)/10
+				}
+			}
+		}
+	}	
+
+		
 	switch(direction){
 		case 0:
 			myY-=speed;
@@ -103,8 +117,16 @@ function update() {
 			myX-=speed;
 	}
 	
-	
-	
+		
+		
+		
+		
+		
+		
+				
+				
+				
+				
 	//update our position and score with the server
 	socket.emit('player_position'+room,myX,myY);    
 	socket.emit('score'+room, myscore);    
@@ -146,25 +168,29 @@ function draw() {
 		context.drawImage(FLOOR ,0, 0, map.length*30, map[0].length*30)
 	
 				
-	
-		context.fillStyle="#ffff00"	
+		//draws the players	
 		for(var k=0;k<playerPositionsX.length;k+=1){
-			console.log(playerPositionsX[k])
+			context.fillStyle=colors[k]	
 	    context.fillRect(playerPositionsX[k], playerPositionsY[k], 25, 25); 
 	    }
 
 		context.scale(1/mapSize,1/mapSize)
 
-		
-		for(var k=0;k<scores.length;k+=1){
-		
-		context.fillStyle="#00ff00"
-		context.fillText("my score: "+ scores[k], 100, 100+25*k)
-	}
+		//draws background for the scores 
 		context.fillStyle="#000"
-		context.fillText(tps, 400, 100)
-		context.fillText(fps, 450, 100)
-		context.fillText(room, 500, 100)
+		context.fillRect(390, 80, 110, 500)
+		
+		//draws scores
+		for(var k=0;k<scores.length;k+=1){
+			context.fillStyle=colors[k]	
+			context.fillText("my score: "+ scores[k], 400, 100+25*k)
+		}
+		
+		
+		context.fillStyle="#000"
+		context.fillText(tps, 400, 50)
+		context.fillText(fps, 450, 50)
+		context.fillText(room, 500, 50)
 	
 	}
 }
@@ -173,15 +199,19 @@ function keydown(key) {
 	switch(key){
 		case 87:
 			direction=0;
+			myY--;
 			break;
 		case 68:
 			direction=1;
+			myX++;
 			break;
 		case 83:
 			direction=2;
+			myY++;
 			break;
 		case 65:
 			direction=3;
+			myX--;
 			break
 		case 32:
 			direction=-1;
