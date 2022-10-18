@@ -82,11 +82,22 @@ console.log(mycolor)
 let myX = 100, myY = 100, direction=0;
 let speed=2
 
+let myGhostX=312, myGhostY=300, myGhostDirection=Math.floor(Math.random()*4);
+
+
 
 let colors=[];
 let scores=[];
 let playerPositionsX=[];
 let playerPositionsY=[];
+
+
+
+
+
+let ghostPositionsX=[];
+let ghostPositionsY=[];
+
 
 
 function update() {
@@ -107,7 +118,15 @@ function update() {
 						myscore++
 						map[x][y]=0
 						genFloor()
-				}				
+				}
+			}	
+			if(areColliding(x*30, y*30, 30, 30, myGhostX, myGhostY, 25, 25)){
+				if(map[x][y]==1){
+						myGhostX+= -(x*30-myGhostX)/10;
+						myGhostY+= -(y*30-myGhostY)/10;
+
+						myGhostDirection=Math.floor(Math.random()*4);
+						}		
 			}
 				
 				
@@ -124,6 +143,21 @@ function update() {
 	}	
 
 		
+	switch(myGhostDirection){
+		case 0:
+			myGhostY-=speed;
+			break;
+		case 1:
+			myGhostX+=speed;
+			break;
+		case 2:
+			myGhostY+=speed;
+			break
+		case 3:
+			myGhostX-=speed;
+	}
+	
+		
 	switch(direction){
 		case 0:
 			myY-=speed;
@@ -137,8 +171,6 @@ function update() {
 		case 3:
 			myX-=speed;
 	}
-	
-		
 		
 		
 		
@@ -151,8 +183,10 @@ function update() {
 	//update our position and score with the server
 	socket.emit('player_position'+room,myX,myY);    
 	socket.emit('score'+room, myscore);    
-
 	socket.emit('color'+room, mycolor);    
+	
+	socket.emit('ghost_position'+room, myGhostX,myGhostY);
+	
 	}
 }
 
@@ -189,12 +223,16 @@ function draw() {
 		context.drawImage(FLOOR ,0, 0, map.length*30, map[0].length*30)
 	
 				
-		//draws the players	
+		//draws the players	and ghost
+		context.lineWidth = 5
 		for(var k=0;k<playerPositionsX.length;k+=1){
 			context.fillStyle=colors[k]	
 	    context.fillRect(playerPositionsX[k], playerPositionsY[k], 25, 25); 
+			context.strokeStyle=colors[k]
+			context.strokeRect(ghostPositionsX[k], ghostPositionsY[k], 25, 25); 
+			
 	    }
-
+		context.lineWidth = 1
 		context.scale(1/mapSize,1/mapSize)
 
 		//draws background for the scores 
@@ -240,6 +278,8 @@ function keydown(key) {
 }
 
 function pointerup(){
+	console.log(mouseX)
+	console.log(mouseY)
 	if(mainMenu){
 		for(let j=0; j<10; j++){
 			if(areColliding(mouseX, mouseY, 1, 1, j*50+80, 70, 49, 49)){
@@ -257,6 +297,12 @@ function pointerup(){
 				//color
 				socket.on('color'+room,function (id,color){
 				colors[id]=color
+				})
+				
+				//ghost positions
+				socket.on('ghost_position'+room,function (id,x, y){
+					ghostPositionsX[id]=x;
+					ghostPositionsY[id]=y;
 				})
 			
 			}

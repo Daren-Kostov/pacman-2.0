@@ -47,6 +47,13 @@ console.log("Player joined")
         socket.on('color'+j,function(color){
         io.emit('color'+j,id1, color)  
         })
+        
+        socket.on('ghost_position'+j,function(x, y){
+        io.emit('ghost_position'+j,id1, x, y)  
+        })
+        
+
+
     }
     
     
