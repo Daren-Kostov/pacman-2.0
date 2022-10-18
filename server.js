@@ -18,7 +18,7 @@ app.get('/', function(req, res){
 
 
 //load sprites
-for(let i=0; i<3; i++){
+for(let i=0; i<4; i++){
     app.get('/'+i+'.png', function(req, res){
         res.sendFile(__dirname + "/sprites/"+i+".png");
     });

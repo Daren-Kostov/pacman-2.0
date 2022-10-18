@@ -62,7 +62,7 @@ let room=Math.floor(Math.random()*2)
 
 //block textures
 let block_img=[];
-for (i=0;i<3;i++){
+for (i=0;i<4;i++){
 	block_img[i]=new Image();
 	block_img[i].src="/"+i+".png"
 }
