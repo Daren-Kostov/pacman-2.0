@@ -3,28 +3,28 @@ var socket = io();
 let map=[
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
   [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
-  [1,2,0,2,0,0,0,2,0,0,0,0,0,2,0,0,0,2,0,2,1],
-  [1,2,0,2,0,2,2,2,2,2,2,2,2,2,2,2,0,2,0,2,1],
-  [1,2,0,2,0,2,0,2,0,0,0,0,0,2,0,2,0,2,0,2,1],
-  [1,2,0,2,0,2,0,2,2,2,2,2,2,2,0,2,0,2,0,2,1],
-  [1,2,0,2,0,2,0,2,0,0,0,0,0,2,0,2,0,2,0,2,1],
-  [1,2,0,2,0,2,0,2,0,0,0,0,0,2,0,2,0,2,0,2,1],
-  [1,2,0,2,0,2,2,2,2,2,2,2,2,2,2,2,0,2,0,2,1],
-  [1,2,0,2,0,2,2,2,3,3,3,3,3,2,2,2,0,2,0,2,1],
-  [1,2,0,2,0,2,0,2,3,3,3,3,3,2,0,2,0,2,0,2,1],
-  [1,2,0,2,2,2,0,2,3,3,3,3,3,2,0,2,2,2,0,2,1],
-  [1,2,0,2,0,2,2,2,3,3,3,3,3,2,2,2,0,2,0,2,1],
-  [1,2,0,2,0,2,2,2,2,2,2,2,2,2,2,2,0,2,0,2,1],
-  [1,2,0,2,0,2,0,2,0,0,0,0,0,2,0,2,0,2,0,2,1],
-  [1,2,0,2,0,2,0,2,0,0,0,0,0,2,0,2,0,2,0,2,1],
-  [1,2,0,2,0,2,0,2,2,2,2,2,2,2,0,2,0,2,0,2,1],
-  [1,2,0,2,0,2,0,2,0,0,0,0,0,2,0,2,0,2,0,2,1],
-  [1,2,0,2,0,2,2,2,2,2,2,2,2,2,2,2,0,2,0,2,1],
-  [1,2,0,2,0,0,0,2,0,0,0,0,0,2,0,0,0,2,0,2,1],
+  [1,2,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,2,1,2,1],
+  [1,2,1,2,1,2,2,2,2,2,2,2,2,2,2,2,1,2,1,2,1],
+  [1,2,1,2,1,2,1,2,1,1,1,1,1,2,1,2,1,2,1,2,1],
+  [1,2,1,2,1,2,1,2,2,2,2,2,2,2,1,2,1,2,1,2,1],
+  [1,2,1,2,1,2,1,2,1,1,1,1,1,2,1,2,1,2,1,2,1],
+  [1,2,1,2,1,2,1,2,1,1,1,1,1,2,1,2,1,2,1,2,1],
+  [1,2,1,2,1,2,2,2,2,2,2,2,2,2,2,2,1,2,1,2,1],
+  [1,2,1,2,1,2,2,2,3,3,3,3,3,2,2,2,1,2,1,2,1],
+  [1,2,1,2,1,2,1,2,3,3,3,3,3,2,1,2,1,2,1,2,1],
+  [1,2,1,2,2,2,1,2,3,3,3,3,3,2,1,2,2,2,1,2,1],
+  [1,2,1,2,1,2,2,2,3,3,3,3,3,2,2,2,1,2,1,2,1],
+  [1,2,1,2,1,2,2,2,2,2,2,2,2,2,2,2,1,2,1,2,1],
+  [1,2,1,2,1,2,1,2,1,1,1,1,1,2,1,2,1,2,1,2,1],
+  [1,2,1,2,1,2,1,2,1,1,1,1,1,2,1,2,1,2,1,2,1],
+  [1,2,1,2,1,2,1,2,2,2,2,2,2,2,1,2,1,2,1,2,1],
+  [1,2,1,2,1,2,1,2,1,1,1,1,1,2,1,2,1,2,1,2,1],
+  [1,2,1,2,1,2,2,2,2,2,2,2,2,2,2,2,1,2,1,2,1],
+  [1,2,1,2,1,1,1,2,1,1,1,1,1,2,1,1,1,2,1,2,1],
   [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
   //3 is the box in the middle
-  // map array 20 to 21
+  // map array 21 to 21
 ] 
 
 
@@ -62,7 +62,7 @@ let room=Math.floor(Math.random()*2)
 
 //block textures
 let block_img=[];
-for (i=0;i<3;i++){
+for (i=0;i<4;i++){
 	block_img[i]=new Image();
 	block_img[i].src="/"+i+".png"
 }
@@ -76,11 +76,29 @@ let mainMenu=true
 //map size
 let mapSize=0.5;
 
+//direction to x and y coordinates
+let dirDef=[
+	{x:0, y:-1},
+	{x:1, y:0},
+	{x:0, y:1},
+	{x:-1, y:0}
+]
+
+
 //our score, coords, and speed, and color
 let myscore=0, mycolor="hsl("+(Math.random()*360)+", 100%, 50%)";
 console.log(mycolor)
 let myX = 100, myY = 100, direction=0;
-let speed=2
+
+//ONLY 1, 2, 3, 5, 10, 15, 30
+let Gspeed=5;
+
+
+let speed=10;
+
+
+let myGhostX=302, myGhostY=302, myGhostDirection=Math.floor(Math.random()*4);
+let myGhostXnext=302, myGhostYnext=302
 
 
 let colors=[];
@@ -89,40 +107,20 @@ let playerPositionsX=[];
 let playerPositionsY=[];
 
 
+
+
+
+let ghostPositionsX=[];
+let ghostPositionsY=[];
+
+
+
 function update() {
 	if(!mainMenu){
 	
-	for(x=0;x<map.length;x++){
-		for(y=0;y<map[0].length;y++){
-			if(areColliding(x*30, y*30, 30, 30, myX, myY, 25, 25)){
-				//if collision with wall
-				switch(map[x][y]){
-					case 1:
-						direction=-1
-						myX+= -(x*30-myX)/10
-						myY+= -(y*30-myY)/10
-						break;
-					//if collision with circle
-					case 2:
-						myscore++
-						map[x][y]=0
-						genFloor()
-				}				
-			}
-				
-				
-			for(var k=0;k<playerPositionsX.length;k+=1){
-				if(areColliding(x*30, y*30, 30, 30, playerPositionsX[k], playerPositionsY[k], 25, 25)){
-					//if another player collides with a white circle remove it from our map (the map is client side)
-					if(map[x][y]==2){
-						map[x][y]=0
-						genFloor()	
-					}
-				}
-			}		
-		}
-	}	
-
+		
+		
+		
 		
 	switch(direction){
 		case 0:
@@ -137,10 +135,79 @@ function update() {
 		case 3:
 			myX-=speed;
 	}
+		
+		
+		
+	for(x=0;x<map.length;x++){
+		for(y=0;y<map[0].length;y++){
+			if(areColliding(x*30, y*30, 30, 30, myX, myY, 25, 25)){
+				//if collision with wall
+				switch(map[x][y]){
+					case 1:
+						direction=-1
+						myX+= -(x*30-myX)/4
+						myY+= -(y*30-myY)/4
+						break;
+					//if collision with circle
+					case 2:
+						myscore++
+						map[x][y]=0
+						genFloor()
+				}
+			}	
+				
+				
+			for(var k=0;k<playerPositionsX.length;k+=1){
+				if(areColliding(x*30, y*30, 30, 30, playerPositionsX[k], playerPositionsY[k], 25, 25)){
+					//if another player collides with a white circle remove it from our map (the map is client side)
+					if(map[x][y]==2){
+						map[x][y]=0
+						genFloor()	
+					}
+				}
+			}		
+		}
+	}	
 	
+		//ghost movement
+	if(myGhostX==myGhostXnext && myGhostY==myGhostYnext){
 		
+		let gX=Math.floor((myGhostX)/30), gY=Math.floor((myGhostY)/30)
+			//direction
+		let d=Math.floor(Math.random()*4)
+			//distance		
+		let dis
+			
+			//if the block in direction is empty proceed
+			while(map[gX+dirDef[d].x][gY+dirDef[d].y]==1){ 
+				d=Math.floor(Math.random()*4)
+			}
+			
+			
+			//if the next block in direction is empty randomy proceed, otherwise break the loop
+			for(dis=2;dis<5;dis++){
+				//break loop if wall OR random number is something
+				if(map[gX+dirDef[d].x*dis][gY+dirDef[d].y*dis]==1 || Math.random()<0.5)
+					break
+			}
+			//give new target for the ghost
+			dis--
+			myGhostXnext+=dirDef[d].x*30*dis	
+			myGhostYnext+=dirDef[d].y*30*dis
+	}else{
+			
+			
+		myGhostX+=Math.sign(myGhostXnext-myGhostX)*Gspeed;
+		myGhostY+=Math.sign(myGhostYnext-myGhostY)*Gspeed;
+	}
+	
+	//player-ghost collision
 		
-		
+	for(var k=0;k<playerPositionsX.length;k+=1){
+		if(areColliding(ghostPositionsX[k], ghostPositionsY[k], 25, 25, myX, myY, 25, 25)){
+		myX=100000
+		}
+	}	
 		
 		
 		
@@ -151,8 +218,10 @@ function update() {
 	//update our position and score with the server
 	socket.emit('player_position'+room,myX,myY);    
 	socket.emit('score'+room, myscore);    
-
 	socket.emit('color'+room, mycolor);    
+	
+	socket.emit('ghost_position'+room, myGhostX,myGhostY);
+	
 	}
 }
 
@@ -189,52 +258,16 @@ function draw() {
 		context.drawImage(FLOOR ,0, 0, map.length*30, map[0].length*30)
 	
 				
-		//draws the players	
-
-	        var numOfPlayers = 2; //change this later 
-	        var randomColor = 'rgb('+
-	        Math.floor(Math.random()*256)+','+
-	        Math.floor(Math.random()*256)+','+
-	        Math.floor(Math.random()*256)+')';
-	        var X = 9;
-	        var Y = 11;
-	        var Xrandom = Math.random();
-	        var Yrandom = Math.random();
-
-	        // for(var i = 0; i <= numOfPlayers; i++){
-	        //  context.beginPath();
-	        //  context.arc(Xpos + 1,Ypos + 1, 20);
-	        //  context.fillStyle = randomColor;
-	        //  context.fill();
-	        // }
-
-	        //drawing sprites
-	        for(var i = 0; i <= numOfPlayers; i++){
-	            var spriteImage = document.getElementById("sprite");
-				context.drawImage(spriteImage, 10, 10, 20, 20, X + 1, Y + 1);
-				context.globalCompositeOperation = "source-in";
-				context.fillStyle = randomColor; //draw random color
-				context.fillRect( X + 1, Y + 1, 20, 20);
-	            i++;
-	        }
-
-	        //drawing ghosts
-	        for(var i = 0; i <= numOfPlayers; i++){
-	            var ghostImage = document.getElementById("ghost");
-	            context.drawImage(ghostImage, 10, 10, 20, 20, Xrandom, Yrandom);
-	            context.globalCompositeOperation = "source-in";
-				context.fillStyle = randomColor; //draw random color
-				context.fillRect(Xrandom, Yrandom, 20, 20);
-	            i++;
-	        }
-
-	    //link for changing the sprite colors: https://stackoverflow.com/questions/45706829/change-color-image-in-canvas#:~:text=There%20are%20a%20couple%20of,and%20then%20draw%20the%20color.
-
+		//draws the players	and ghost
+		context.lineWidth = 10
 		for(var k=0;k<playerPositionsX.length;k+=1){
 			context.fillStyle=colors[k]	
 	    context.fillRect(playerPositionsX[k], playerPositionsY[k], 25, 25); 
+			context.strokeStyle=colors[k]
+			context.strokeRect(ghostPositionsX[k], ghostPositionsY[k], 25, 25); 
+			
 	    }
-
+		context.lineWidth = 1
 		context.scale(1/mapSize,1/mapSize)
 
 		//draws background for the scores 
@@ -255,24 +288,28 @@ function draw() {
 	
 	}
 }
+//movement impulses
+let mvimp=3
+function setDirection(d, i){
+	direction=d;
+	if(i>0)
+		setTimeout(setDirection,100, d, i-1)
+}
+
 function keydown(key) {
 	console.log("Pressed", key);
 	switch(key){
 		case 87:
-			direction=0;
-			myY--;
+			setDirection(0, mvimp)
 			break;
 		case 68:
-			direction=1;
-			myX++;
+			setDirection(1, mvimp)
 			break;
 		case 83:
-			direction=2;
-			myY++;
+			setDirection(2, mvimp)
 			break;
 		case 65:
-			direction=3;
-			myX--;
+			setDirection(3, mvimp)
 			break
 		case 32:
 			direction=-1;
@@ -280,6 +317,8 @@ function keydown(key) {
 }
 
 function pointerup(){
+	console.log(mouseX)
+	console.log(mouseY)
 	if(mainMenu){
 		for(let j=0; j<10; j++){
 			if(areColliding(mouseX, mouseY, 1, 1, j*50+80, 70, 49, 49)){
@@ -298,10 +337,15 @@ function pointerup(){
 				socket.on('color'+room,function (id,color){
 				colors[id]=color
 				})
+				
+				//ghost positions
+				socket.on('ghost_position'+room,function (id,x, y){
+					ghostPositionsX[id]=x;
+					ghostPositionsY[id]=y;
+				})
 			
 			}
 		}
 	}
 
 }
-
