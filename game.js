@@ -114,6 +114,26 @@ let ghostPositionsY=[];
 function update() {
 	if(!mainMenu){
 	
+		
+		
+		
+		
+	switch(direction){
+		case 0:
+			myY-=speed;
+			break;
+		case 1:
+			myX+=speed;
+			break;
+		case 2:
+			myY+=speed;
+			break
+		case 3:
+			myX-=speed;
+	}
+		
+		
+		
 	for(x=0;x<map.length;x++){
 		for(y=0;y<map[0].length;y++){
 			if(areColliding(x*30, y*30, 30, 30, myX, myY, 25, 25)){
@@ -180,19 +200,6 @@ function update() {
 	
 	
 		
-	switch(direction){
-		case 0:
-			myY-=speed;
-			break;
-		case 1:
-			myX+=speed;
-			break;
-		case 2:
-			myY+=speed;
-			break
-		case 3:
-			myX-=speed;
-	}
 		
 		
 		
@@ -275,24 +282,27 @@ function draw() {
 	
 	}
 }
+
+function setDirection(d, i){
+	direction=d;
+	if(i>0)
+		setTimeout(setDirection,50, d, i-1)
+}
+
 function keydown(key) {
 	console.log("Pressed", key);
 	switch(key){
 		case 87:
-			direction=0;
-			myY--;
+			setDirection(0, 4)
 			break;
 		case 68:
-			direction=1;
-			myX++;
+			setDirection(1, 4)
 			break;
 		case 83:
-			direction=2;
-			myY++;
+			setDirection(2, 4)
 			break;
 		case 65:
-			direction=3;
-			myX--;
+			setDirection(3, 4)
 			break
 		case 32:
 			direction=-1;
