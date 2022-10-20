@@ -76,14 +76,23 @@ let mainMenu=true
 //map size
 let mapSize=0.5;
 
+//direction to x and y coordinates
+let dirDef=[
+	{x:0, y:-1},
+	{x:1, y:0},
+	{x:0, y:1},
+	{x:-1, y:0}
+]
+
+
 //our score, coords, and speed, and color
 let myscore=0, mycolor="hsl("+(Math.random()*360)+", 100%, 50%)";
 console.log(mycolor)
 let myX = 100, myY = 100, direction=0;
 let speed=2
 
-let myGhostX=312, myGhostY=300, myGhostDirection=Math.floor(Math.random()*4);
-
+let myGhostX=300, myGhostY=300, myGhostDirection=Math.floor(Math.random()*4);
+let myGhostXnext=302, myGhostYnext=302
 
 
 let colors=[];
@@ -120,14 +129,6 @@ function update() {
 						genFloor()
 				}
 			}	
-			if(areColliding(x*30, y*30, 30, 30, myGhostX, myGhostY, 25, 25)){
-				if(map[x][y]==1){
-						myGhostX+= -(x*30-myGhostX)/10;
-						myGhostY+= -(y*30-myGhostY)/10;
-
-						myGhostDirection=Math.floor(Math.random()*4);
-						}		
-			}
 				
 				
 			for(var k=0;k<playerPositionsX.length;k+=1){
@@ -141,21 +142,39 @@ function update() {
 			}		
 		}
 	}	
-
+	
+		//ghost movement
+	if(Math.round(myGhostX)==Math.round(myGhostXnext) && Math.round(myGhostY)==Math.round(myGhostYnext)){
 		
-	switch(myGhostDirection){
-		case 0:
-			myGhostY-=speed;
-			break;
-		case 1:
-			myGhostX+=speed;
-			break;
-		case 2:
-			myGhostY+=speed;
-			break
-		case 3:
-			myGhostX-=speed;
+		let gX=Math.floor((myGhostX)/30), gY=Math.floor((myGhostY)/30)
+			//direction
+		let d=Math.floor(Math.random()*4)
+			//distance		
+		let dis
+			
+			//if the block in direction is empty proceed
+			while(map[gX+dirDef[d].x][gY+dirDef[d].y]==1){ 
+				console.log(map[gX+dirDef[d].x][gY+dirDef[d].y])
+				d=Math.floor(Math.random()*4)
+			}
+			
+			
+			//if the next block in direction is empty randomy proceed, otherwise break the loop
+			for(dis=1;dis<5;dis++){
+				if(map[gX+dirDef[d].x*dis][gY+dirDef[d].y*dis]==1 && Math.random()<0.5)
+					break
+			}
+			dis--
+			console.log(dis)
+					myGhostXnext+=dirDef[d].x*30*dis	
+					myGhostYnext+=dirDef[d].y*30*dis
+	}else{
+			
+			
+		myGhostX+=Math.sign(myGhostXnext-myGhostX)*2;
+		myGhostY+=Math.sign(myGhostYnext-myGhostY)*2;
 	}
+	
 	
 		
 	switch(direction){
@@ -224,7 +243,7 @@ function draw() {
 	
 				
 		//draws the players	and ghost
-		context.lineWidth = 5
+		context.lineWidth = 10
 		for(var k=0;k<playerPositionsX.length;k+=1){
 			context.fillStyle=colors[k]	
 	    context.fillRect(playerPositionsX[k], playerPositionsY[k], 25, 25); 
