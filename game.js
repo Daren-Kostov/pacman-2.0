@@ -89,9 +89,11 @@ let dirDef=[
 let myscore=0, mycolor="hsl("+(Math.random()*360)+", 100%, 50%)";
 console.log(mycolor)
 let myX = 100, myY = 100, direction=0;
-let speed=2
 
-let myGhostX=300, myGhostY=300, myGhostDirection=Math.floor(Math.random()*4);
+//ONLY 1, 2, 3, 5, 10, 15, 30
+let speed=10
+
+let myGhostX=302, myGhostY=302, myGhostDirection=Math.floor(Math.random()*4);
 let myGhostXnext=302, myGhostYnext=302
 
 
@@ -144,7 +146,7 @@ function update() {
 	}	
 	
 		//ghost movement
-	if(Math.round(myGhostX)==Math.round(myGhostXnext) && Math.round(myGhostY)==Math.round(myGhostYnext)){
+	if(myGhostX==myGhostXnext && myGhostY==myGhostYnext){
 		
 		let gX=Math.floor((myGhostX)/30), gY=Math.floor((myGhostY)/30)
 			//direction
@@ -160,19 +162,20 @@ function update() {
 			
 			
 			//if the next block in direction is empty randomy proceed, otherwise break the loop
-			for(dis=1;dis<5;dis++){
-				if(map[gX+dirDef[d].x*dis][gY+dirDef[d].y*dis]==1 && Math.random()<0.5)
+			for(dis=2;dis<5;dis++){
+				//break loop if wall OR random number is something
+				if(map[gX+dirDef[d].x*dis][gY+dirDef[d].y*dis]==1 || Math.random()<0.5)
 					break
 			}
+			//give new target for the ghost
 			dis--
-			console.log(dis)
-					myGhostXnext+=dirDef[d].x*30*dis	
-					myGhostYnext+=dirDef[d].y*30*dis
+			myGhostXnext+=dirDef[d].x*30*dis	
+			myGhostYnext+=dirDef[d].y*30*dis
 	}else{
 			
 			
-		myGhostX+=Math.sign(myGhostXnext-myGhostX)*2;
-		myGhostY+=Math.sign(myGhostYnext-myGhostY)*2;
+		myGhostX+=Math.sign(myGhostXnext-myGhostX)*speed;
+		myGhostY+=Math.sign(myGhostYnext-myGhostY)*speed;
 	}
 	
 	
