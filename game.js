@@ -91,7 +91,11 @@ console.log(mycolor)
 let myX = 100, myY = 100, direction=0;
 
 //ONLY 1, 2, 3, 5, 10, 15, 30
-let speed=10
+let Gspeed=5;
+
+
+let speed=10;
+
 
 let myGhostX=302, myGhostY=302, myGhostDirection=Math.floor(Math.random()*4);
 let myGhostXnext=302, myGhostYnext=302
@@ -141,8 +145,8 @@ function update() {
 				switch(map[x][y]){
 					case 1:
 						direction=-1
-						myX+= -(x*30-myX)/10
-						myY+= -(y*30-myY)/10
+						myX+= -(x*30-myX)/4
+						myY+= -(y*30-myY)/4
 						break;
 					//if collision with circle
 					case 2:
@@ -176,7 +180,6 @@ function update() {
 			
 			//if the block in direction is empty proceed
 			while(map[gX+dirDef[d].x][gY+dirDef[d].y]==1){ 
-				console.log(map[gX+dirDef[d].x][gY+dirDef[d].y])
 				d=Math.floor(Math.random()*4)
 			}
 			
@@ -194,14 +197,17 @@ function update() {
 	}else{
 			
 			
-		myGhostX+=Math.sign(myGhostXnext-myGhostX)*speed;
-		myGhostY+=Math.sign(myGhostYnext-myGhostY)*speed;
+		myGhostX+=Math.sign(myGhostXnext-myGhostX)*Gspeed;
+		myGhostY+=Math.sign(myGhostYnext-myGhostY)*Gspeed;
 	}
 	
-	
+	//player-ghost collision
 		
-		
-		
+	for(var k=0;k<playerPositionsX.length;k+=1){
+		if(areColliding(ghostPositionsX[k], ghostPositionsY[k], 25, 25, myX, myY, 25, 25)){
+		myX=100000
+		}
+	}	
 		
 		
 		
@@ -282,27 +288,28 @@ function draw() {
 	
 	}
 }
-
+//movement impulses
+let mvimp=3
 function setDirection(d, i){
 	direction=d;
 	if(i>0)
-		setTimeout(setDirection,50, d, i-1)
+		setTimeout(setDirection,100, d, i-1)
 }
 
 function keydown(key) {
 	console.log("Pressed", key);
 	switch(key){
 		case 87:
-			setDirection(0, 4)
+			setDirection(0, mvimp)
 			break;
 		case 68:
-			setDirection(1, 4)
+			setDirection(1, mvimp)
 			break;
 		case 83:
-			setDirection(2, 4)
+			setDirection(2, mvimp)
 			break;
 		case 65:
-			setDirection(3, 4)
+			setDirection(3, mvimp)
 			break
 		case 32:
 			direction=-1;
