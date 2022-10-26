@@ -239,54 +239,52 @@ draw_block=[]
 
 
 context.globalCompositeOperation = "destination-over"
-
-
 function draw() {
+		
 	context.clearRect(0,0,1000,1000)
   //when in main menu
 	if(mainMenu){
 		for(let j=0; j<10; j++){
-			context.fillStyle="#0f0"
-			context.fillRect(j*50+80, 70, 49, 49)
-			
 			context.fillStyle="#000"
 			context.fillText(j, 50*j+100, 100)
+			context.fillStyle="#0f0"
+			context.fillRect(j*50+80, 70, 49, 49)
 		
 		}
 	//when not in main menu
 	}else{
 	
 	
-	
 		context.scale(mapSize,mapSize)
 		
 		
+		//draws the players	and ghost
+		context.lineWidth = 10
+		for(var k=0;k<1;k+=1){
+				
+			context.fillStyle=colors[k]	
+	    context.drawImage(pacmanIMG,playerPositionsX[k], playerPositionsY[k], 25, 25); 
+			context.drawImage(ghostIMG,ghostPositionsX[k], ghostPositionsY[k], 25, 25); 
+			
+				
+			context.globalAlpha = 0.5
+			context.globalCompositeOperation = "source-atop";
+			context.fillRect(playerPositionsX[k], playerPositionsY[k], 25, 25); 
+			context.fillRect(ghostPositionsX[k], ghostPositionsY[k], 25, 25); 
+			context.globalCompositeOperation = "destination-over";
+
+			context.globalAlpha = 1
+	    }
 		
+			context.globalCompositeOperation = "destination-over";
 		//draw the floor texture
 		context.drawImage(FLOOR ,0, 0, map.length*30, map[0].length*30)
 	
 				
-		//draws the players	and ghost
-		context.lineWidth = 10
-		for(var k=0;k<playerPositionsX.length;k+=1){
-			context.fillStyle=colors[k]	
-	    context.drawImage(pacmanIMG,playerPositionsX[k], playerPositionsY[k], 25, 25); 
-	    context.globalCompositeOperation = "source-atop";
-			context.fillRect(playerPositionsX[k], playerPositionsY[k], 25, 25); 
-			context.globalCompositeOperation = "source-over";
-			
-			context.drawImage(pacmanIMG,ghostPositionsX[k], ghostPositionsY[k], 25, 25); 
-			context.globalCompositeOperation = "source-atop";
-			context.fillRect(ghostPositionsX[k], ghostPositionsY[k], 25, 25); 
-			context.globalCompositeOperation = "source-over";
-
-	    }
 		context.lineWidth = 1
 		context.scale(1/mapSize,1/mapSize)
 
 		//draws background for the scores 
-		context.fillStyle="#000"
-		context.fillRect(390, 80, 110, 500)
 		
 		//draws scores
 		for(var k=0;k<scores.length;k+=1){
@@ -296,11 +294,16 @@ function draw() {
 		
 		
 		context.fillStyle="#000"
+		context.fillRect(390, 80, 110, 500)
+		
+			context.fillStyle="#000"
 		context.fillText(tps, 400, 50)
 		context.fillText(fps, 450, 50)
 		context.fillText(room, 500, 50)
 	
 	}
+	
+	
 }
 //movement impulses
 let mvimp=3
