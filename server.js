@@ -17,12 +17,20 @@ app.get('/', function(req, res){
 });
 
 
-//load sprites
+//load block sprites
 for(let i=0; i<4; i++){
     app.get('/'+i+'.png', function(req, res){
         res.sendFile(__dirname + "/sprites/"+i+".png");
     });
 }
+
+//load pacman and ghost sprites
+app.get('/pacman.png', function(req, res){
+    res.sendFile(__dirname + "/sprites/pacman.png");
+});
+app.get('/ghost.png', function(req, res){
+    res.sendFile(__dirname + "/sprites/ghost.png");
+});
 
 app.get('/game.js', function(req, res){
     res.sendFile(__dirname + "/game.js");

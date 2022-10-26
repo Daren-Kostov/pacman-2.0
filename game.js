@@ -60,12 +60,20 @@ let room=Math.floor(Math.random()*2)
 
 
 
-//block textures
+//TEXTURES
 let block_img=[];
 for (i=0;i<4;i++){
 	block_img[i]=new Image();
-	block_img[i].src="/"+i+".png"
+	block_img[i].src="/"+i+".png";
 }
+
+let pacmanIMG= new Image();
+pacmanIMG.src="/pacman.png";
+
+
+let ghostIMG= new Image();
+ghostIMG.src="/ghost.png";
+
 
 
 let mainMenu=true
@@ -230,7 +238,7 @@ draw_block=[]
 
 
 
-
+context.globalCompositeOperation = "destination-over"
 
 
 function draw() {
@@ -262,10 +270,16 @@ function draw() {
 		context.lineWidth = 10
 		for(var k=0;k<playerPositionsX.length;k+=1){
 			context.fillStyle=colors[k]	
-	    context.fillRect(playerPositionsX[k], playerPositionsY[k], 25, 25); 
-			context.strokeStyle=colors[k]
-			context.strokeRect(ghostPositionsX[k], ghostPositionsY[k], 25, 25); 
+	    context.drawImage(pacmanIMG,playerPositionsX[k], playerPositionsY[k], 25, 25); 
+	    context.globalCompositeOperation = "source-atop";
+			context.fillRect(playerPositionsX[k], playerPositionsY[k], 25, 25); 
+			context.globalCompositeOperation = "source-over";
 			
+			context.drawImage(pacmanIMG,ghostPositionsX[k], ghostPositionsY[k], 25, 25); 
+			context.globalCompositeOperation = "source-atop";
+			context.fillRect(ghostPositionsX[k], ghostPositionsY[k], 25, 25); 
+			context.globalCompositeOperation = "source-over";
+
 	    }
 		context.lineWidth = 1
 		context.scale(1/mapSize,1/mapSize)
