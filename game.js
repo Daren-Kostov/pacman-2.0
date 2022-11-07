@@ -114,7 +114,7 @@ let colors=[];
 let scores=[];
 let playerPositionsX=[];
 let playerPositionsY=[];
-
+let playerDirection=[];
 
 
 
@@ -153,7 +153,7 @@ function update() {
 				//if collision with wall
 				switch(map[x][y]){
 					case 1:
-						direction=-1
+						direction=-3
 						myX+= -(x*30-myX)/4
 						myY+= -(y*30-myY)/4
 						break;
@@ -225,7 +225,7 @@ function update() {
 				
 				
 	//update our position and score with the server
-	socket.emit('player_position'+room,myX,myY);    
+	socket.emit('player_position'+room,myX,myY, direction);    
 	socket.emit('score'+room, myscore);    
 	socket.emit('color'+room, mycolor);    
 	
@@ -264,7 +264,16 @@ function draw() {
 		for(i=0;i<playerPositionsX.length;i++){
 				
 			context.fillStyle=colors[i]	
-	    context.drawImage(pacmanIMG,playerPositionsX[i], playerPositionsY[i], 25, 25); 
+			
+			
+			context.translate(playerPositionsX[i]+25/2, playerPositionsY[i]+25/2);
+			context.rotate((playerDirection[i]+3)*Math.PI*0.5);
+	    context.drawImage(pacmanIMG,-25/2, -25/2, 25, 25); 
+			
+			context.rotate(-(playerDirection[i]+3)*Math.PI*0.5);
+			
+			context.translate(-playerPositionsX[i]-25/2, -playerPositionsY[i]-25/2)
+			
 			context.drawImage(ghostIMG,ghostPositionsX[i], ghostPositionsY[i], 25, 25); 
 			
 				
@@ -330,7 +339,7 @@ function keydown(key) {
 			setDirection(3, mvimp)
 			break
 		case 32:
-			direction=-1;
+			direction=-3;
 	}	
 }
 
@@ -343,17 +352,18 @@ function pointerup(){
 				mainMenu=false
 				room=j
 				//player position
-				socket.on('player_position'+room,function (id,x,y){
-				playerPositionsX[id]=x
-				playerPositionsY[id]=y
+				socket.on('player_position'+room,function (id,x,y,dir){
+				playerPositionsX[id]=x;
+				playerPositionsY[id]=y;
+				playerDirection[id]=dir;
 				})
 				//color
 				socket.on('score'+room,function (id,score){
-				scores[id]=score
+				scores[id]=score;
 				})
 				//color
 				socket.on('color'+room,function (id,color){
-				colors[id]=color
+				colors[id]=color;
 				})
 				
 				//ghost positions

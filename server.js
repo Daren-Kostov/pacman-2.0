@@ -43,8 +43,8 @@ console.log("Player joined")
     id++
     for(let j=0; j<10; j++){
     //player positions
-        socket.on('player_position'+j,function(x,y){
-        io.emit('player_position'+j,id1,x,y)  
+        socket.on('player_position'+j,function(x, y, direction){
+        io.emit('player_position'+j, id1, x, y, direction)  
         })
     //player scores
         socket.on('score'+j,function(score){
