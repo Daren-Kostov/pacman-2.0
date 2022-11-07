@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>body {margin:0;overflow:hidden} canvas { touch-action: none; }</style>
+	</head>
+	<body onload="init()">
+		<canvas id="canvas-id" />
+		<script>
+
+          
+          
+
+          
+var canvas = document.getElementById("canvas-id");
+canvas.width  = window.innerWidth
+canvas.height = window.innerHeight
+var context = canvas.getContext("2d");
+
+   
+      
+          
+          
+var mouseX = 0;
+var mouseY = 0;
+
+var fingerX = 0;
+var fingerY = 0;
+          
+var penX = 0;
+var penY = 0;
+          
+var key_left	= 37;
+var key_up		= 38;
+var key_right	= 39;
+var key_down	= 40;
+var key_a		= 65;
+var key_z		= 90;
+
+var isKeyPressed=[];
+for(i=0;i<256;++i)
+	isKeyPressed.push(0);
+
+
+var reqAnimationFrame =
+	window.requestAnimationFrame ||
+	window.mozRequestAnimationFrame ||
+	window.webkitRequestAnimationFrame ||
+	window.msRequestAnimationFrame ||
+	function(callback) {
+		setTimeout(callback, 1000/30);
+	}
+function redraw() {
+    	draw();
+	reqAnimationFrame(redraw);
+}
+
+function areColliding(Ax, Ay, Awidth, Aheight, Bx, By, Bwidth, Bheight) {
+	if (Bx <= Ax + Awidth) {
+		if (Ax <= Bx + Bwidth) {
+			if (By <= Ay + Aheight) {
+				if (Ay <= By + Bheight) {
+					return 1;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+            
+function toggleFullScreen() {
+  if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+}
+          
+//https://stackoverflow.com/questions/17428587/transposing-a-2d-array-in-javascript
+function transpose(matrix) {
+  const rows = matrix.length, cols = matrix[0].length;
+  const grid = [];
+  for (let j = 0; j < cols; j++) {
+    grid[j] = Array(rows);
+  }
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      grid[j][i] = matrix[i][j];
+    }
+  }
+  return grid;
+}
+          
+          
+function init() {
+	window.addEventListener("pointermove", function(e) {
+        switch(e.pointerType){
+          case "mouse":
+		    mouseX=e.pageX-canvas.offsetLeft;
+		    mouseY=e.pageY-canvas.offsetTop;
+            break
+          case "touch":
+		    fingerX=e.pageX-canvas.offsetLeft;
+		    fingerY=e.pageY-canvas.offsetTop;
+            break
+          case "pen":
+		    penX=e.pageX-canvas.offsetLeft;
+		    penY=e.pageY-canvas.offsetTop;
+            break
+        }
+
+	});
+
+	if(typeof pointermove != "undefined")
+		window.addEventListener("pointermove", pointermove);
+	if(typeof pointerup != "undefined")
+		window.addEventListener("pointerup", function(e) {
+            e = e || window.event;
+          switch(e.pointerType){
+          case "mouse":
+		    mouseX=e.pageX-canvas.offsetLeft;
+		    mouseY=e.pageY-canvas.offsetTop;
+            break
+          case "touch":
+		    fingerX=e.pageX-canvas.offsetLeft;
+		    fingerY=e.pageY-canvas.offsetTop;
+            break
+          case "pen":
+		    penX=e.pageX-canvas.offsetLeft;
+		    penY=e.pageY-canvas.offsetTop;
+            break
+        }
+            const button=e.which;
+            const type=e.pointerType;
+            pointerup(type,button);
+        });
+    if(typeof pointerdown != "undefined")
+		window.addEventListener("pointerdown", function(e) {
+            e = e || window.event;
+          switch(e.pointerType){
+          case "mouse":
+		    mouseX=e.pageX-canvas.offsetLeft;
+		    mouseY=e.pageY-canvas.offsetTop;
+            break
+          case "touch":
+		    fingerX=e.pageX-canvas.offsetLeft;
+		    fingerY=e.pageY-canvas.offsetTop;
+            break
+          case "pen":
+		    penX=e.pageX-canvas.offsetLeft;
+		    penY=e.pageY-canvas.offsetTop;
+            break
+        }
+
+          
+            const button=e.which;
+            const type=e.pointerType;
+            pointerdown(type, button);
+        });
+    if(typeof pointerwheel != "undefined")
+		window.addEventListener("wheel", function(e) {
+    const delta = Math.sign(e.deltaY);
+    pointerwheel(delta);
+});
+    if(typeof keydown != "undefined")
+		window.addEventListener("keydown", function(e) {
+			isKeyPressed[e.keyCode]=1;
+			keydown(e.keyCode);
+		});
+	else window.addEventListener("keydown", function(e) {
+		isKeyPressed[e.keyCode]=1;
+	});
+	if(typeof keyup != "undefined")
+		window.addEventListener("keyup", function(e) {
+			isKeyPressed[e.keyCode]=0;
+			keyup(e.keyCode);
+		});
+	else window.addEventListener("keyup", function(e) {
+		isKeyPressed[e.keyCode]=0;
+	});
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	redraw();
+	
+	
+}
+
+
+let grid=[];
+
+let sizeX=21;
+let sizeY=21;
+let sizeS=30;//size square
+
+for(i=0; i<sizeX; i++){
+	grid[i]=[];
+	for(j=0; j<sizeY; j++)
+		grid[i][j]=2;
+}
+
+
+
+
+let block_img=[];
+for (i=0;i<4;i++){
+	block_img[i]=new Image();
+	block_img[i].src="sprites/"+i+".png";
+}
+
+
+
+
+for(i=0; i<sizeX; i++){
+	for(j=0; j<sizeY; j++){
+		grid[0][j]=1;
+		grid[i][0]=1;
+		grid[sizeX-1][j]=1;
+		grid[i][sizeY-1]=1;
+		context.drawImage(block_img[0], i*sizeS, j*sizeS, sizeS-1, sizeS-1)	
+	}
+}
+
+
+context.globalAlpha=0.2
+
+draw= function(){
+	
+for(i=0; i<sizeX; i++)
+	for(j=0; j<sizeY; j++){
+		
+		if(grid[i][j]==2){
+			context.drawImage(block_img[0], i*sizeS, j*sizeS, sizeS-1, sizeS-1)	
+			context.globalAlpha=1
+			context.drawImage(block_img[2], i*sizeS, j*sizeS, sizeS-1, sizeS-1)	
+			context.globalAlpha=0.2
+		
+		}else
+			context.drawImage(block_img[grid[i][j]], i*sizeS, j*sizeS, sizeS-1, sizeS-1)	
+}
+
+
+}
+
+function pointerup(type,button){
+console.log(button)
+	switch (button){
+		case 1:
+			grid[Math.floor(mouseX/sizeS)][Math.floor(mouseY/sizeS)]=1//(grid[Math.floor(mouseX/sizeS)][Math.floor(mouseY/sizeS)]+1)%4
+			break;
+		case 2:
+			grid[Math.floor(mouseX/sizeS)][Math.floor(mouseY/sizeS)]=3
+			break
+		case 3:
+			grid[Math.floor(mouseX/sizeS)][Math.floor(mouseY/sizeS)]=2
+
+	}
+	context.globalAlpha=1
+	context.drawImage(block_img[0], Math.floor(mouseX/sizeS)*sizeS, Math.floor(mouseY/sizeS)*sizeS, sizeS-1, sizeS-1)	
+	context.globalAlpha=0.2
+}
+allowRightClick(false)
+
+
+
+
+function printMap(){
+	output="let map=[ "
+	for(i=0; i<sizeX; i++){
+		output+="["
+			
+		for(j=0; j<sizeY; j++){
+			output+=grid[i][j]
+		if(j!=sizeY-1)
+			output+=","
+		else
+			output+=""
+	}
+		if(i!=sizeX-1)
+			output+="],"
+		else
+			output+="]"
+}
+	output+="]"
+console.log(output)
+
+}
+
+
+
+function allowRightClick(value){
+  document.oncontextmenu = function() {return value;}
+}
+/*
+window.onbeforeunload = function (e) {
+    // Cancel the event
+    e.preventDefault();
+
+    // Chrome requires returnValue to be set
+    e.returnValue = 'Really want to quit?';
+};
+*/
+//Prevent Ctrl+S (and Ctrl+W for old browsers and Edge)
+document.onkeydown = function (e) {
+    e = e || window.event;//Get event
+
+    if (!e.ctrlKey) return;
+
+    var code = e.which || e.keyCode;//Get key code
+
+    switch (code) {
+        case 83://Block Ctrl+S
+        case 87://Block Ctrl+W -- Not work in Chrome and new Firefox
+        case 68://Block Ctrl+D
+            e.preventDefault();
+            e.stopPropagation();
+            break;
+    }
+};
+        </script>
+      </div>
+      <!--  <img src="0.png" />
+        <img src="1.png" />
+        <img src="2.png" /> -->
+
+	</body>
+</html>
