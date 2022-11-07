@@ -67,14 +67,15 @@ for (i=0;i<4;i++){
 	block_img[i].src="/"+i+".png";
 }
 
+
+
+
 let pacmanIMG= new Image();
 pacmanIMG.src="/pacman.png";
 
 
 let ghostIMG= new Image();
 ghostIMG.src="/ghost.png";
-
-
 
 let mainMenu=true
 
@@ -102,7 +103,7 @@ let myX = 100, myY = 100, direction=0;
 let Gspeed=5;
 
 
-let speed=10;
+let speed=5;
 
 
 let myGhostX=302, myGhostY=302, myGhostDirection=Math.floor(Math.random()*4);
@@ -260,17 +261,17 @@ function draw() {
 		
 		//draws the players	and ghost
 		context.lineWidth = 10
-		for(var k=0;k<1;k+=1){
+		for(i=0;i<playerPositionsX.length;i++){
 				
-			context.fillStyle=colors[k]	
-	    context.drawImage(pacmanIMG,playerPositionsX[k], playerPositionsY[k], 25, 25); 
-			context.drawImage(ghostIMG,ghostPositionsX[k], ghostPositionsY[k], 25, 25); 
+			context.fillStyle=colors[i]	
+	    context.drawImage(pacmanIMG,playerPositionsX[i], playerPositionsY[i], 25, 25); 
+			context.drawImage(ghostIMG,ghostPositionsX[i], ghostPositionsY[i], 25, 25); 
 			
 				
 			context.globalAlpha = 0.5
 			context.globalCompositeOperation = "source-atop";
-			context.fillRect(playerPositionsX[k], playerPositionsY[k], 25, 25); 
-			context.fillRect(ghostPositionsX[k], ghostPositionsY[k], 25, 25); 
+			context.fillRect(playerPositionsX[i], playerPositionsY[i], 25, 25); 
+			context.fillRect(ghostPositionsX[i], ghostPositionsY[i], 25, 25); 
 			context.globalCompositeOperation = "destination-over";
 
 			context.globalAlpha = 1
