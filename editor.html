@@ -30,12 +30,6 @@ var fingerY = 0;
 var penX = 0;
 var penY = 0;
           
-var key_left	= 37;
-var key_up		= 38;
-var key_right	= 39;
-var key_down	= 40;
-var key_a		= 65;
-var key_z		= 90;
 
 var isKeyPressed=[];
 for(i=0;i<256;++i)
@@ -50,7 +44,24 @@ var reqAnimationFrame =
 	function(callback) {
 		setTimeout(callback, 1000/30);
 	}
+	
+	const times = [];
+let fps;
+	
+	
 function redraw() {
+  window.requestAnimationFrame(() => {
+    const now = performance.now();
+    while (times.length > 0 && times[0] <= now - 1000) {
+      times.shift();
+    }
+    times.push(now);
+    fps = times.length;
+  });
+
+
+
+
     	draw();
 	reqAnimationFrame(redraw);
 }
@@ -198,17 +209,78 @@ function init() {
 }
 
 
+
+
+function getGridMouseX(){
+	return Math.max(0,Math.min(sizeX-1,Math.floor(mouseX/sizeS)))
+}
+
+function getGridMouseY(){
+	return Math.max(0,Math.min(sizeY-1,Math.floor(mouseY/sizeS)))
+}
+
+
 let grid=[];
 
 let sizeX=21;
 let sizeY=21;
 let sizeS=30;//size square
 
-for(i=0; i<sizeX; i++){
-	grid[i]=[];
-	for(j=0; j<sizeY; j++)
-		grid[i][j]=2;
+
+
+
+function setGridSize(w,h){
+
+
+	//set size variables
+	sizeX=w
+	sizeY=h
+	sizeS=630/(Math.max(w,h))
+
+	//remake the grid
+	grid=[]
+	for(i=0; i<sizeX; i++){
+		grid[i]=[];
+		for(j=0; j<sizeY; j++)
+			grid[i][j]=2;
+	}
+
+
+	//remake the borders
+	for(i=0; i<sizeX; i++){
+		for(j=0; j<sizeY; j++){
+			grid[0][j]=1;
+			grid[i][0]=1;
+			grid[sizeX-1][j]=1;
+			grid[i][sizeY-1]=1;
+		}
+	}
+
+
+	context.fillStyle="#000"
+	context.fillRect(0,0,1000,1000)
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let clickTime=0;//time after the mouse is clicked
+let clickedButton=0;//which button is clicked, 0 means none
+
+
+
+
 
 
 
@@ -222,54 +294,139 @@ for (i=0;i<4;i++){
 
 
 
-for(i=0; i<sizeX; i++){
-	for(j=0; j<sizeY; j++){
-		grid[0][j]=1;
-		grid[i][0]=1;
-		grid[sizeX-1][j]=1;
-		grid[i][sizeY-1]=1;
-		context.drawImage(block_img[0], i*sizeS, j*sizeS, sizeS-1, sizeS-1)	
-	}
-}
+
+
+setGridSize(21,21)
+
 
 
 context.globalAlpha=0.2
-
-draw= function(){
-	
-for(i=0; i<sizeX; i++)
-	for(j=0; j<sizeY; j++){
-		
-		if(grid[i][j]==2){
-			context.drawImage(block_img[0], i*sizeS, j*sizeS, sizeS-1, sizeS-1)	
-			context.globalAlpha=1
-			context.drawImage(block_img[2], i*sizeS, j*sizeS, sizeS-1, sizeS-1)	
-			context.globalAlpha=0.2
-		
-		}else
-			context.drawImage(block_img[grid[i][j]], i*sizeS, j*sizeS, sizeS-1, sizeS-1)	
-}
+function draw(){
 
 
-}
 
-function pointerup(type,button){
-console.log(button)
-	switch (button){
+
+  //UPDATE
+
+
+	if(clickedButton!=0){
+		clickTime++;
+	}
+
+	if(clickTime>5){
+		switch(clickedButton){
 		case 1:
-			grid[Math.floor(mouseX/sizeS)][Math.floor(mouseY/sizeS)]=1//(grid[Math.floor(mouseX/sizeS)][Math.floor(mouseY/sizeS)]+1)%4
+			grid[getGridMouseX()][getGridMouseY()]=1//(grid[getGridMouseX()][getGridMouseY()]+1)%4
 			break;
 		case 2:
-			grid[Math.floor(mouseX/sizeS)][Math.floor(mouseY/sizeS)]=3
+			grid[getGridMouseX()][getGridMouseY()]=3
 			break
 		case 3:
-			grid[Math.floor(mouseX/sizeS)][Math.floor(mouseY/sizeS)]=2
+			grid[getGridMouseX()][getGridMouseY()]=2
+		}
+	}
+	
+	
+	
+	
+	
+	//DRAWING
+	
+	for(i=0; i<sizeX; i++)
+		for(j=0; j<sizeY; j++){
+		
+		
+				
+		
+			if(grid[i][j]==2){
+		
+				context.drawImage(block_img[0], i*sizeS, j*sizeS, sizeS-1, sizeS-1)	
+				context.globalAlpha=1
+				context.globalAlpha=0.2
+
+				context.globalAlpha=1
+				context.drawImage(block_img[2], i*sizeS, j*sizeS, sizeS-1, sizeS-1)	
+				context.globalAlpha=0.2
+		
+			}else
+				context.drawImage(block_img[grid[i][j]], i*sizeS, j*sizeS, sizeS-1, sizeS-1)	
+		}//end of grind loop
+
+	
+	
+	
+	//square borders, using fillRect
+	context.fillStyle="#000"
+	//context.lineWidth=1
+	for(i=0; i<sizeX; i++)
+		context.fillRect(i*sizeS+sizeS-1, 0, 1, sizeS*sizeX)
+	for(j=0; j<sizeY; j++)
+		context.fillRect(0, j*sizeS+sizeS-1, sizeS*sizeX, 1)
+					
+					
+	if(clickedButton==0)
+		context.strokeStyle="#0ff";
+	else
+		context.strokeStyle="#ff4400";
+					
+					
+	context.globalAlpha=1
+	context.lineWidth=3
+	context.strokeRect(getGridMouseX()*sizeS, getGridMouseY()*sizeS, sizeS, sizeS)
+	
+	
+	
+	context.globalAlpha=1
+	context.fillStyle="#ff4400"
+	for(i=0; i<10; i++)
+		for(j=0; j<10; j++)
+			context.fillRect(650+i*25,50+j*25, 24, 24)
+
+
+}
+
+
+
+
+
+
+
+function pointerup(type,button){
+	switch (button){
+		case 1:
+			grid[getGridMouseX()][getGridMouseY()]=1//(grid[getGridMouseX()][getGridMouseY()]+1)%4
+			break;
+		case 2:
+			grid[getGridMouseX()][getGridMouseY()]=3
+			break
+		case 3:
+			grid[getGridMouseX()][getGridMouseY()]=2
 
 	}
 	context.globalAlpha=1
-	context.drawImage(block_img[0], Math.floor(mouseX/sizeS)*sizeS, Math.floor(mouseY/sizeS)*sizeS, sizeS-1, sizeS-1)	
+	context.drawImage(block_img[0], getGridMouseX()*sizeS, getGridMouseY()*sizeS, sizeS-1, sizeS-1)	
 	context.globalAlpha=0.2
+	
+	
+	
+	clickedButton=0;
+	clickTime=0;
+	
+	
 }
+
+
+function pointerdown(type,button){
+
+clickedButton=button
+
+}
+
+
+
+
+
+
 allowRightClick(false)
 
 
