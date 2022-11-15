@@ -258,7 +258,7 @@ function setGridSize(w,h){
 
 
 	context.fillStyle="#000"
-	context.fillRect(0,0,1000,1000)
+	context.fillRect(0,0,630,630)
 
 }
 
@@ -277,8 +277,8 @@ function setGridSize(w,h){
 
 let clickTime=0;//time after the mouse is clicked
 let clickedButton=0;//which button is clicked, 0 means none
-
-
+let state=180//state of the cursor
+let isAboutToChangeSize=0
 
 
 
@@ -299,10 +299,11 @@ for (i=0;i<4;i++){
 setGridSize(21,21)
 
 
-
-context.globalAlpha=0.2
+context.fillStyle="#000"
+context.fillRect(0,0,10000,10000)
 function draw(){
 
+context.globalAlpha=0.2
 
 
 
@@ -355,34 +356,72 @@ function draw(){
 	
 	
 	
-	//square borders, using fillRect
+	//square borders, using fillRect, yes, no lineTo
 	context.fillStyle="#000"
 	//context.lineWidth=1
 	for(i=0; i<sizeX; i++)
-		context.fillRect(i*sizeS+sizeS-1, 0, 1, sizeS*sizeX)
+		context.fillRect(i*sizeS+sizeS-1, 0, 1, sizeS*sizeY)
 	for(j=0; j<sizeY; j++)
 		context.fillRect(0, j*sizeS+sizeS-1, sizeS*sizeX, 1)
 					
 					
+		context.fillRect(sizeS*sizeX, 0, 3, sizeS*sizeY+3)//+3 for the corner
+		context.fillRect(0, sizeS*sizeY, sizeS*sizeX, 3)
+					
+					
 	if(clickedButton==0)
-		context.strokeStyle="#0ff";
+		state-=(state-180)/3
 	else
-		context.strokeStyle="#ff4400";
+		state-=(state-28)/3
+
+
+	if(areColliding(mouseX, mouseY, 1, 1, 0, 0, sizeS*sizeX, sizeS*sizeY)){
+		context.strokeStyle="hsl("+state+", 100%, 50%)"
 					
-					
-	context.globalAlpha=1
-	context.lineWidth=3
-	context.strokeRect(getGridMouseX()*sizeS, getGridMouseY()*sizeS, sizeS, sizeS)
+		context.globalAlpha=1
+		context.lineWidth=3
+		context.strokeRect(getGridMouseX()*sizeS, getGridMouseY()*sizeS, sizeS, sizeS)
+	}
 	
 	
-	
-	context.globalAlpha=1
-	context.fillStyle="#ff4400"
-	for(i=0; i<10; i++)
-		for(j=0; j<10; j++)
+	context.globalAlpha=0.2
+	context.fillStyle="#ff7700"
+	for(i=0; i<11; i++)
+		for(j=0; j<11; j++)
 			context.fillRect(650+i*25,50+j*25, 24, 24)
+			
+			
+			
+	if(areColliding(mouseX, mouseY, 1, 1, 650, 50, 11*25, 11*25)){	
+		context.globalAlpha=0.2+0.8*isAboutToChangeSize
+		
+		context.fillStyle="#ff4400"
+		
+		for(i=0; i<Math.ceil((mouseX-650)/25); i++)
+			for(j=0; j<Math.ceil((mouseY-50)/25); j++){
+				
+				context.fillStyle="#ff0000"
+				
+				if(j>5 || i>5)
+					context.fillStyle="#00ffff"
+					
+				if(j==5 || i==5)
+				 context.fillStyle="#00ff00"
+					
+				context.fillRect(650+i*25,50+j*25, 24, 24)
+			}
+	}
+	
+		
+	context.globalAlpha=1
 
-
+	context.fillStyle="#000"
+	context.fillRect(640, 7, 100, 25)
+	
+	context.fillStyle="#fff"
+	context.fillText(sizeX+", "+sizeY, 650, 25)
+	context.fillText(fps, 690, 25)
+	
 }
 
 
@@ -392,33 +431,57 @@ function draw(){
 
 
 function pointerup(type,button){
-	switch (button){
-		case 1:
-			grid[getGridMouseX()][getGridMouseY()]=1//(grid[getGridMouseX()][getGridMouseY()]+1)%4
-			break;
-		case 2:
-			grid[getGridMouseX()][getGridMouseY()]=3
-			break
-		case 3:
-			grid[getGridMouseX()][getGridMouseY()]=2
+	if(areColliding(mouseX, mouseY, 1, 1, 0, 0, sizeS*sizeX, sizeS*sizeY)){
+		switch (button){
+			case 1:
+				grid[getGridMouseX()][getGridMouseY()]=1//(grid[getGridMouseX()][getGridMouseY()]+1)%4
+				break;
+			case 2:
+				grid[getGridMouseX()][getGridMouseY()]=3
+				break
+			case 3:
+				grid[getGridMouseX()][getGridMouseY()]=2
 
+		}
+		context.globalAlpha=1
+		context.drawImage(block_img[0], getGridMouseX()*sizeS, getGridMouseY()*sizeS, sizeS-1, sizeS-1)	
+		context.globalAlpha=0.2
+	
 	}
-	context.globalAlpha=1
-	context.drawImage(block_img[0], getGridMouseX()*sizeS, getGridMouseY()*sizeS, sizeS-1, sizeS-1)	
-	context.globalAlpha=0.2
-	
-	
-	
+
 	clickedButton=0;
 	clickTime=0;
+
+
+
+	isAboutToChangeSize=0			
 	
+	if(areColliding(mouseX, mouseY, 1, 1, 650, 50, 11*25, 11*25)){	
+		let W=Math.ceil((mouseX-650)/25)
+		let H=Math.ceil((mouseY-50)/25)
+				
+		W+=sizeX-6
+		H+=sizeY-6
+
+		W=Math.min(100,Math.max(3, W))		
+		H=Math.min(100,Math.max(3, H))	
+								
+																
+		setGridSize(W, H)		
+	}
 	
 }
 
 
 function pointerdown(type,button){
-
-clickedButton=button
+	if(areColliding(mouseX, mouseY, 1, 1, 0, 0, sizeS*sizeX, sizeS*sizeY))
+		clickedButton=button
+		
+		
+		
+	if(areColliding(mouseX, mouseY, 1, 1, 650, 50, 11*25, 11*25))
+		isAboutToChangeSize=1				
+		
 
 }
 
