@@ -302,9 +302,17 @@ function draw() {
 		//draws scores
 		for(var k=0;k<scores.length;k+=1){
 			context.fillStyle=colors[k]	
-			context.fillText("my score: "+ scores[k], 400, 100+25*k)
+			context.fillText("my score: "+ scores[k], 400, 100+25*(k+1))
 		}
-		
+		if(room>numberOfRooms/2-1){//if co-op
+			let sumScore=0
+			for(var k=0;k<scores.length;k+=1)
+				sumScore+=scores[k];
+				
+			context.fillStyle="#fff"	
+			context.fillText("Global score: "+ sumScore, 400, 100)
+			
+		}
 		
 		context.fillStyle="#000"
 		context.fillRect(390, 80, 110, 500)
