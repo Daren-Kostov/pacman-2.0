@@ -5,6 +5,8 @@ var http =require('http').Server(app)
 var io = require('socket.io')(http);
 
 
+//reference
+//https://socket.io/docs/v3/emitting-events/
 
 
 
@@ -36,41 +38,53 @@ app.get('/game.js', function(req, res){
     res.sendFile(__dirname + "/game.js");
 });
 
-var id=0
+var id=[]
+for(let j=0; j<2; j++)
+    id[j]=0
+
 io.on("connection", function(socket){
 console.log("Player joined")
-    var id1=id
-    id++
+    //var id1=id
+    
     for(let j=0; j<2; j++){
+        //id[j]++
+        
     //player positions
         socket.on('player_position'+j,function(x, y, direction){
-        io.emit('player_position'+j, id1, x, y, direction)  
+        io.emit('player_position'+j, id[j], x, y, direction)  
         })
     //player scores
         socket.on('score'+j,function(score){
-        io.emit('score'+j,id1,score)  
+        io.emit('score'+j,id[j],score)  
         })
         
     //player colors
         socket.on('color'+j,function(color){
-        io.emit('color'+j,id1, color)  
+        io.emit('color'+j,id[j], color)  
         })
-        
+    //ghost positions
         socket.on('ghost_position'+j,function(x, y){
-        io.emit('ghost_position'+j,id1, x, y)  
+        io.emit('ghost_position'+j,id[j], x, y)  
         })
         
+        }
 
 
-    }
     
-    
+
+    socket.on("joined_room", (room) => {
+        console.log("Player joined "+room+" room under id "+id[room])
+        id[room]++
+            
+    });
     
     
     
     
     
 })
+
+
 
 
 

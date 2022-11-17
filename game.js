@@ -360,8 +360,15 @@ function pointerup(){
 	if(mainMenu){
 		for(let j=0; j<numberOfRooms; j++){
 			if(areColliding(mouseX, mouseY, 1, 1, j*60+80, 70, 50, 50)){
+				
+				
+				
+				
+				
 				mainMenu=false
 				room=j
+
+				socket.emit('joined_room', room);
 				//player position
 				socket.on('player_position'+room,function (id,x,y,dir){
 				playerPositionsX[id]=x;
@@ -382,7 +389,6 @@ function pointerup(){
 					ghostPositionsX[id]=x;
 					ghostPositionsY[id]=y;
 				})
-			
 			}
 		}
 	}
