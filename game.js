@@ -54,8 +54,8 @@ setTimeout(genFloor, 500);
 
 
 
-
-let room=Math.floor(Math.random()*2)
+let numberOfRooms=2
+let room//=Math.floor(Math.random()*2)
 
 
 
@@ -245,11 +245,14 @@ function draw() {
 	context.clearRect(0,0,1000,1000)
   //when in main menu
 	if(mainMenu){
-		for(let j=0; j<10; j++){
+		for(let j=0; j<numberOfRooms; j++){
 			context.fillStyle="#000"
-			context.fillText(j, 50*j+100, 100)
+			context.fillText(j+1, 60*j+102, 100)
+			context.fillStyle="#f00"
+			if(j>numberOfRooms/2-1)
 			context.fillStyle="#0f0"
-			context.fillRect(j*50+80, 70, 49, 49)
+			
+			context.fillRect(j*60+80, 70, 50, 50)
 		
 		}
 	//when not in main menu
@@ -347,8 +350,8 @@ function pointerup(){
 	console.log(mouseX)
 	console.log(mouseY)
 	if(mainMenu){
-		for(let j=0; j<10; j++){
-			if(areColliding(mouseX, mouseY, 1, 1, j*50+80, 70, 49, 49)){
+		for(let j=0; j<numberOfRooms; j++){
+			if(areColliding(mouseX, mouseY, 1, 1, j*60+80, 70, 50, 50)){
 				mainMenu=false
 				room=j
 				//player position
