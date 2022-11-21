@@ -150,6 +150,10 @@ let ghostPositionsY=[];
 socket.on("give_passwd", function(passwd){
 myPassword=passwd
 })
+//get room amount
+socket.on("get_room_amount", function(rooms){
+number_of_rooms=rooms
+})
 
 
 
@@ -157,7 +161,7 @@ myPassword=passwd
 
 
 
-
+io.emit("get_room_amount");
 
 function update() {
 	if(!mainMenu){

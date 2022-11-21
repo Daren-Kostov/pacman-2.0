@@ -90,16 +90,16 @@ console.log("Player joined")
 
     
     socket.on('get_room_amount',function(){
-        return numberOfRooms
+        io.emit('get_room_amount',numberOfRooms);
     });
 
     socket.on('give_passwd',function(room){
         //make the password and idff
-        let password=getRandStr(20)
-        passwd[room][password]=id
-        id[room]++
+        let password=getRandStr(20);
+        passwd[room][password]=id;
+        id[room]++;
         
-        io.emit('give_passwd', password)//give the password to the client
+        io.emit('give_passwd', password);//give the password to the client
     });
     
     
