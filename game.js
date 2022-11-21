@@ -126,6 +126,8 @@ let speed=5;
 
 let myGhostX=302, myGhostY=302, myGhostDirection=Math.floor(Math.random()*4);
 let myGhostXnext=302, myGhostYnext=302
+let myPassword=""
+
 
 
 let colors=[];
@@ -139,6 +141,21 @@ let playerDirection=[];
 
 let ghostPositionsX=[];
 let ghostPositionsY=[];
+
+
+
+
+
+//get our password
+socket.on("give_passwd", function(passwd){
+myPassword=passwd
+})
+
+
+
+
+
+
 
 
 
@@ -373,6 +390,8 @@ function keydown(key) {
 }
 
 function pointerup(){
+	socket.emit("give_passwd", 1)
+	console.log(myPassword)
 	console.log(mouseX)
 	console.log(mouseY)
 	if(mainMenu){
