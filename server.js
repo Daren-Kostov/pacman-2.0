@@ -51,7 +51,7 @@ app.get('/game.js', function(req, res){
 //second index is the id
 
 
-let numberOfRooms=2
+let numberOfRooms=10
 
 let id=[]//id of players
 let passwd=[]//passwords that give you player ids, second index is password
@@ -94,13 +94,32 @@ console.log("Player joined")
     });
 
     socket.on('give_passwd',function(room){
-        //make the password and idff
+        //make the password
         let password=getRandStr(20);
         passwd[room][password]=id;
-        id[room]++;
         
+        //make player        
+        player[room][passwd[room][password]]={
+        x:0, 
+        y:0, 
+        direction:-1,
+        score:0,
+        }        
+        
+        
+        
+        id[room]++;
         io.emit('give_passwd', password);//give the password to the client
     });
+    
+    socket.io('get_players', function(room){
+        io.emit('get_players', player[room])
+
+
+
+    })
+    
+    
     
     
     

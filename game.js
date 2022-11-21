@@ -136,7 +136,7 @@ let playerPositionsX=[];
 let playerPositionsY=[];
 let playerDirection=[];
 
-
+let player=[]
 
 
 let ghostPositionsX=[];
@@ -152,17 +152,20 @@ myPassword=passwd
 })
 //get room amount
 socket.on("get_room_amount", function(rooms){
-number_of_rooms=rooms
+numberOfRooms=rooms
+})
+
+//get all player info
+socket.on('get_players', function(players){
+	player=players;
+
 })
 
 
 
 
-
-
-
-io.emit("get_room_amount");
-
+socket.emit("get_room_amount");
+socket.emit("get_players", room);
 function update() {
 	if(!mainMenu){
 	
