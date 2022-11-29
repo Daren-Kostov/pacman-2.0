@@ -180,55 +180,11 @@ function update() {
 	if(!mainMenu){
 	
 		
+		//request info from the server
+		socket.emit("get_players", room);
+		socket.emit("get_map", room);
 		
 		
-		
-	switch(direction){
-		case 0:
-			myY-=speed;
-			break;
-		case 1:
-			myX+=speed;
-			break;
-		case 2:
-			myY+=speed;
-			break
-		case 3:
-			myX-=speed;
-	}
-		
-		
-		
-	for(x=0;x<map.length;x++){
-		for(y=0;y<map[0].length;y++){
-			if(areColliding(x*30, y*30, 30, 30, myX, myY, 25, 25)){
-				//if collision with wall
-				switch(map[x][y]){
-					case 1:
-						direction=-3
-						myX+= -(x*30-myX)/4
-						myY+= -(y*30-myY)/4
-						break;
-					//if collision with circle
-					case 2:
-						myscore++
-						map[x][y]=0
-						genFloor()
-				}
-			}	
-				
-				
-			for(var k=0;k<playerPositionsX.length;k+=1){
-				if(areColliding(x*30, y*30, 30, 30, playerPositionsX[k], playerPositionsY[k], 25, 25)){
-					//if another player collides with a white circle remove it from our map (the map is client side)
-					if(map[x][y]==2){
-						map[x][y]=0
-						genFloor()	
-					}
-				}
-			}		
-		}
-	}	
 	
 		//ghost movement
 	if(myGhostX==myGhostXnext && myGhostY==myGhostYnext){
@@ -276,10 +232,6 @@ function update() {
 				
 				
 				
-	//update our position and score with the server
-	socket.emit('player_position'+room,myX,myY, direction);    
-	socket.emit('score'+room, myscore);    
-	socket.emit('color'+room, mycolor);    
 	
 	socket.emit('ghost_position'+room, myGhostX,myGhostY);
 	
@@ -316,25 +268,25 @@ function draw() {
 		
 		//draws the players	and ghost
 		context.lineWidth = 10
-		for(i=0;i<playerPositionsX.length;i++){
+		for(i=0;i<player.length;i++){
 				
-			context.fillStyle=colors[i]	
+			context.fillStyle=player[i].color	
 			
 			
-			context.translate(playerPositionsX[i]+25/2, playerPositionsY[i]+25/2);
-			context.rotate((playerDirection[i]+3)*Math.PI*0.5);
+			context.translate(player[i].x+25/2, player[i].y+25/2);
+			context.rotate((player[i].direction+3)*Math.PI*0.5);
 	    context.drawImage(pacmanIMG,-25/2, -25/2, 25, 25); 
 			
-			context.rotate(-(playerDirection[i]+3)*Math.PI*0.5);
+			context.rotate(-(player[i].direction+3)*Math.PI*0.5);
 			
-			context.translate(-playerPositionsX[i]-25/2, -playerPositionsY[i]-25/2)
+			context.translate(-player[i].x-25/2, -player[i].y-25/2)
 			
 			context.drawImage(ghostIMG,ghostPositionsX[i], ghostPositionsY[i], 25, 25); 
 			
 				
 			context.globalAlpha = 0.5
 			context.globalCompositeOperation = "source-atop";
-			context.fillRect(playerPositionsX[i], playerPositionsY[i], 25, 25); 
+			context.fillRect(player[i].x, player[i].y, 25, 25); 
 			context.fillRect(ghostPositionsX[i], ghostPositionsY[i], 25, 25); 
 			context.globalCompositeOperation = "destination-over";
 
@@ -352,14 +304,14 @@ function draw() {
 		//draws background for the scores 
 		
 		//draws scores
-		for(var k=0;k<scores.length;k+=1){
-			context.fillStyle=colors[k]	
-			context.fillText("my score: "+ scores[k], 400, 100+25*(k+1))
+		for(var i=0;i<player.length;i+=1){
+			context.fillStyle=player[i].color	
+			context.fillText("my score: "+ player[i].score, 400, 100+25*(i+1))
 		}
 		if(room>numberOfRooms/2-1){//if co-op
 			let sumScore=0
-			for(var k=0;k<scores.length;k+=1)
-				sumScore+=scores[k];
+			for(var k=0;k<player.length;k+=1)
+				sumScore+=player[k].score;
 				
 			context.fillStyle="#fff"	
 			context.fillText("Global score: "+ sumScore, 400, 100)
@@ -381,7 +333,8 @@ function draw() {
 //movement impulses
 let mvimp=3
 function setDirection(d, i){
-	direction=d;
+	direction=d;	
+	socket.emit("set_direction", room, myPassword, d); 
 	if(i>0)
 		setTimeout(setDirection,100, d, i-1)
 }
@@ -422,9 +375,6 @@ function pointerup(){
 				socket.emit("give_passwd", room)
 				
 				
-socket.emit("get_players", room);
-socket.emit("get_map", room);
-
 setTimeout(genFloor, 500);
 				
 				

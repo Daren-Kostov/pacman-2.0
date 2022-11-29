@@ -134,6 +134,18 @@ let dirDef=[
 ]
 
 
+function areColliding(Ax, Ay, Awidth, Aheight, Bx, By, Bwidth, Bheight) {
+	if (Bx <= Ax + Awidth) {
+		if (Ax <= Bx + Bwidth) {
+			if (By <= Ay + Aheight) {
+				if (Ay <= By + Bheight) {
+					return 1;
+				}
+			}
+		}
+	}
+	return 0;
+}
 
 
 function update(){
@@ -171,9 +183,8 @@ function update(){
                   						break;
                   					//if collision with circle
                   					case 2:
-                  						myscore++
+                  						player[r][p].score++
                   						map[r][x][y]=0
-                  						genFloor()
                   				}
 
                     }
@@ -218,17 +229,16 @@ console.log("Player joined")
     socket.on('give_passwd',function(room){
         //make the password
         let password=getRandStr(20);
-        passwd[room][password]=id;
+        passwd[room][password]=id[room];
         
         //make player        
         player[room][passwd[room][password]]={
-        x:0, 
-        y:0, 
+        x:100, 
+        y:100, 
         direction:-1,
         score:0,
         color:"hsl("+(Math.random()*360)+", 100%, 50%)",
         }        
-        
         
         
         id[room]++;
@@ -238,6 +248,7 @@ console.log("Player joined")
     //client requests all player info of a given room
     socket.on('get_players', function(room){
         io.emit('get_players', player[room])
+        //console.log(player[room])
     })
     
     //client requests the map of a given room
