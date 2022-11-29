@@ -168,12 +168,9 @@ socket.on('get_map', function(Map){
 
 
 socket.emit("get_room_amount");
-socket.emit("get_players", room);
-socket.emit("get_map", room);
 
 
-
-setTimeout(genFloor, 500);
+			
 
 
 function update() {
@@ -423,6 +420,16 @@ function pointerup(){
 				mainMenu=false
 				room=j
 				socket.emit("give_passwd", room)
+				
+				
+socket.emit("get_players", room);
+socket.emit("get_map", room);
+
+setTimeout(genFloor, 500);
+				
+				
+				
+				
 				//player position
 				socket.on('player_position'+room,function (id,x,y,dir){
 				playerPositionsX[id]=x;
