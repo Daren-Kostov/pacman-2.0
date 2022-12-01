@@ -65,7 +65,10 @@ function genFloor(){
 		}
 	}
 }
-
+	//set scale of map depending on how big it is
+function rescale(){
+	mapSize=Math.min((790)/(map.length*30),(600)/(map[0].length*30))
+}
 
 
 
@@ -98,7 +101,7 @@ let mainMenu=true
 
 
 //map size
-let mapSize=0.5;
+let mapSize=1;
 
 //direction to x and y coordinates
 let dirDef=[
@@ -145,7 +148,9 @@ let ghostPositionsY=[];
 
 //get our password
 socket.on("give_passwd", function(passwd){
-myPassword=passwd
+	if(myPassword==""){
+		myPassword=passwd
+	}
 })
 //get room amount
 socket.on("get_room_amount", function(rooms){
@@ -241,11 +246,15 @@ function update() {
 
 draw_block=[]
 
-
+time=0
 
 context.globalCompositeOperation = "destination-over"
 function draw() {
-		
+		time++
+	if(time%4==0)
+		genFloor();
+	
+	
 	context.clearRect(0,0,1000,1000)
   //when in main menu
 	if(mainMenu){
@@ -306,7 +315,7 @@ function draw() {
 		//draws scores
 		for(var i=0;i<player.length;i+=1){
 			context.fillStyle=player[i].color	
-			context.fillText("my score: "+ player[i].score, 400, 100+25*(i+1))
+			context.fillText("my score: "+ player[i].score, 800, 100+25*(i+1))
 		}
 		if(room>numberOfRooms/2-1){//if co-op
 			let sumScore=0
@@ -314,17 +323,17 @@ function draw() {
 				sumScore+=player[k].score;
 				
 			context.fillStyle="#fff"	
-			context.fillText("Global score: "+ sumScore, 400, 100)
+			context.fillText("Global score: "+ sumScore, 800, 100)
 			
 		}
 		
 		context.fillStyle="#000"
-		context.fillRect(390, 80, 110, 500)
+		context.fillRect(790, 80, 110, 500)
 		
 			context.fillStyle="#000"
-		context.fillText(tps, 400, 50)
-		context.fillText(fps, 450, 50)
-		context.fillText(room, 500, 50)
+		context.fillText(tps, 800, 50)
+		context.fillText(fps, 850, 50)
+		context.fillText(room, 900, 50)
 	
 	}
 	
@@ -340,22 +349,24 @@ function setDirection(d, i){
 }
 
 function keydown(key) {
-	console.log("Pressed", key);
-	switch(key){
-		case 87:
-			setDirection(0, mvimp)
-			break;
-		case 68:
-			setDirection(1, mvimp)
-			break;
-		case 83:
-			setDirection(2, mvimp)
-			break;
-		case 65:
-			setDirection(3, mvimp)
-			break
-		case 32:
-			direction=-3;
+	if(!mainMenu){
+		console.log("Pressed", key);
+		switch(key){
+			case 87:
+				setDirection(0, mvimp)
+				break;
+			case 68:
+				setDirection(1, mvimp)
+				break;
+			case 83:
+				setDirection(2, mvimp)
+				break;
+			case 65:
+				setDirection(3, mvimp)
+				break
+			case 32:
+				direction=-3;
+		}
 	}	
 }
 
@@ -374,8 +385,11 @@ function pointerup(){
 				room=j
 				socket.emit("give_passwd", room)
 				
-				
-setTimeout(genFloor, 500);
+
+							
+				setTimeout(rescale, 500);
+				//draw the map
+				setTimeout(genFloor, 500);
 				
 				
 				

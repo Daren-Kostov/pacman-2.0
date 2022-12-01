@@ -147,7 +147,7 @@ function areColliding(Ax, Ay, Awidth, Aheight, Bx, By, Bwidth, Bheight) {
 	return 0;
 }
 
-
+speed=2
 function update(){
     
     //loop through all rooms
@@ -177,7 +177,7 @@ function update(){
                 				//if collision with wall
                         switch(map[r][x][y]){
                   					case 1:
-                  						direction=-3
+                  						player[r][p].direction=-3
                   						player[r][p].x+= -(x*30-player[r][p].x)/4
                   						player[r][p].y+= -(y*30-player[r][p].y)/4
                   						break;
@@ -258,7 +258,7 @@ console.log("Player joined")
     })
     //client sets player dirrection (with password)
     socket.on('set_direction', function(room, password, direction){
-        player[room][passwd[room][passwd]].direction=direction
+        player[room][passwd[room][password]].direction=direction
         
     
     })
