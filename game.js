@@ -109,8 +109,8 @@ let Gspeed=5;
 let speed=5;
 
 
-let myGhostX=302, myGhostY=302, myGhostDirection=Math.floor(Math.random()*4);
-let myGhostXnext=302, myGhostYnext=302
+let myGhostX=0, myGhostY=0, myGhostDirection=Math.floor(Math.random()*4);
+let myGhostXnext=0, myGhostYnext=0
 
 
 let colors=[];
@@ -161,6 +161,28 @@ socket.on('map',function (globalMap){
 	FLOOR.width=map.length*30
 	FLOOR.height=map[0].length*30
 	setTimeout(genFloor, 500);
+
+
+	//set up the ghost positions
+
+	while(myGhostX==0)
+		for(x=0;x<map.length;x++){
+			for(y=0;y<map[0].length;y++){
+				if(map[x][y]==3){
+					if(Math.random()<0.1){
+						myGhostX=x*30+2
+						myGhostY=y*30+2
+						myGhostXnext=x*30+2
+						myGhostYnext=y*30+2
+				
+					}
+
+				}
+			
+			}
+		}
+
+	
 })
 
 //tell us what map we are using!
@@ -186,6 +208,10 @@ function update() {
 			if(votes<0)
 				ffa=true;
 			//if not dont change it (its already false)
+
+
+
+			
 		}
 
 
