@@ -48,7 +48,7 @@ app.get('/game.js', function(req, res){
 });
 
 
-let mapAmount=1;
+let mapAmount=8;
 let chosenMap=Math.floor(Math.random()*mapAmount);
 
 
