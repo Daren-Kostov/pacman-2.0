@@ -7,9 +7,17 @@ var io = require('socket.io')(http);
 
 //reference
 //https://socket.io/docs/v3/emitting-events/
+//https://stackoverflow.com/questions/4351521/how-do-i-pass-command-line-arguments-to-a-node-js-program
 
 
 
+
+let port=3000;
+
+process.argv.forEach(function (val, index, array) {
+    if(index==2)
+        port=val;
+});
 
 
 
@@ -38,50 +46,38 @@ app.get('/game.js', function(req, res){
     res.sendFile(__dirname + "/game.js");
 });
 
-var id=[]
-for(let j=0; j<2; j++)
-    id[j]=0
+let id=0
 
 io.on("connection", function(socket){
-console.log("Player joined")
-    //var id1=id
+console.log("Player "+id+" joined at port "+port)
     
-    for(let j=0; j<2; j++){
-        //id[j]++
-        
+      var id1=id;
+
+
     //player positions
-        socket.on('player_position'+j,function(x, y, direction){
-        io.emit('player_position'+j, id[j], x, y, direction)  
+        socket.on('player_position',function(x, y, direction){
+        io.emit('player_position', id1, x, y, direction)  
         })
     //player scores
-        socket.on('score'+j,function(score){
-        io.emit('score'+j,id[j],score)  
+        socket.on('score',function(score){
+        io.emit('score',id1,score)  
         })
         
     //player colors
-        socket.on('color'+j,function(color){
-        io.emit('color'+j,id[j], color)  
+        socket.on('color',function(color){
+        io.emit('color',id1, color)  
+        })
+    //player vote
+        socket.on('vote',function(vote){
+        io.emit('vote',id1, vote)  
         })
     //ghost positions
-        socket.on('ghost_position'+j,function(x, y){
-        io.emit('ghost_position'+j,id[j], x, y)  
+        socket.on('ghost_position',function(x, y){
+        io.emit('ghost_position',id1, x, y)  
         })
-        
-        }
 
-
-    
-
-    socket.on("joined_room", (room) => {
-        console.log("Player joined "+room+" room under id "+id[room])
-        id[room]++
+        id++;
             
-    });
-    
-    
-    
-    
-    
 })
 
 
@@ -90,6 +86,6 @@ console.log("Player joined")
 
 
 
-http.listen(3000, function(){
+http.listen(port, function(){
 console.log("server started");
 });

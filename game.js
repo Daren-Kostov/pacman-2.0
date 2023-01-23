@@ -98,6 +98,8 @@ let dirDef=[
 let myscore=0, mycolor="hsl("+(Math.random()*360)+", 100%, 50%)";
 console.log(mycolor)
 let myX = 100, myY = 100, direction=0;
+let myvote=0
+
 
 //ONLY 1, 2, 3, 5, 10, 15, 30
 let Gspeed=5;
@@ -115,6 +117,7 @@ let scores=[];
 let playerPositionsX=[];
 let playerPositionsY=[];
 let playerDirection=[];
+let playerVote=[];
 
 
 
@@ -124,13 +127,54 @@ let ghostPositionsY=[];
 
 
 
+//player position
+socket.on('player_position',function (id,x,y,dir){
+	playerPositionsX[id]=x;
+	playerPositionsY[id]=y;
+	playerDirection[id]=dir;
+})
+//color
+socket.on('score',function (id,score){
+	scores[id]=score;
+})
+//color
+socket.on('color',function (id,color){
+	colors[id]=color;
+})
+//vote
+socket.on('vote',function (id,vote){
+	playerVote[id]=vote;
+})
+
+//ghost positions
+socket.on('ghost_position',function (id,x, y){
+	ghostPositionsX[id]=x;
+	ghostPositionsY[id]=y;
+})
+
+
+
 function update() {
-	if(!mainMenu){
+	if(mainMenu){
+
+		let votes=0;
+		let players=0
+		for(i=0;i<playerVote.length;i++){
+			if(!isNaN(playerVote[i]))
+				votes+=playerVote[i];
+				players++;
+		}
+
+		//at least 3 players have voted and the votes dont equalize
+		if(players>=3 && votes!=0){
+			mainMenu=false;
+		}
+
+
 	
+	}else{
 		
-		
-		
-		
+	
 	switch(direction){
 		case 0:
 			myY-=speed;
@@ -214,22 +258,19 @@ function update() {
 		
 	for(var k=0;k<playerPositionsX.length;k+=1){
 		if(areColliding(ghostPositionsX[k], ghostPositionsY[k], 25, 25, myX, myY, 25, 25)){
-		myX=100000
+		myX=1000000000
 		}
 	}	
 		
 		
-		
-				
-				
 				
 				
 	//update our position and score with the server
-	socket.emit('player_position'+room,myX,myY, direction);    
-	socket.emit('score'+room, myscore);    
-	socket.emit('color'+room, mycolor);    
+	socket.emit('player_position',myX,myY, direction);    
+	socket.emit('score', myscore);    
+	socket.emit('color', mycolor);    
 	
-	socket.emit('ghost_position'+room, myGhostX,myGhostY);
+	socket.emit('ghost_position', myGhostX,myGhostY);
 	
 	}
 }
@@ -245,16 +286,41 @@ function draw() {
 	context.clearRect(0,0,1000,1000)
   //when in main menu
 	if(mainMenu){
-		for(let j=0; j<numberOfRooms; j++){
-			context.fillStyle="#000"
-			context.fillText(j+1, 60*j+102, 100)
-			context.fillStyle="#f00"
-			if(j>numberOfRooms/2-1)
-			context.fillStyle="#0f0"
-			
-			context.fillRect(j*60+80, 70, 50, 50)
-		
+		let votes=0;
+		for(i=0;i<playerVote.length;i++){
+			if(!isNaN(playerVote[i]))
+				votes+=playerVote[i];
 		}
+
+
+
+			if(votes<0)
+				context.fillStyle="#f70"
+			else if(votes>0)
+				context.fillStyle="#0ff"
+			else
+				context.fillStyle="#000"
+		
+			context.fillRect(420, 70, votes*10+1, 50);
+
+
+			context.font="30px Arial"
+			context.fillStyle="#000"
+			context.fillText("FFA", 285, 185)
+		
+			context.fillText("Co-op", 500, 185)
+
+
+		
+			context.fillStyle="#f70"
+			context.fillRect(250, 150, 120, 50);
+			context.fillStyle="#0ff"
+			context.fillRect(480, 150, 120, 50);
+
+			context.font="10px Arial"
+
+
+		
 	//when not in main menu
 	}else{
 	
@@ -354,43 +420,20 @@ function keydown(key) {
 	}	
 }
 
+
 function pointerup(){
 	console.log(mouseX)
 	console.log(mouseY)
 	if(mainMenu){
-		for(let j=0; j<numberOfRooms; j++){
-			if(areColliding(mouseX, mouseY, 1, 1, j*60+80, 70, 50, 50)){
-				
-				
-				
-				
-				
-				mainMenu=false
-				room=j
+		if(areColliding(mouseX, mouseY, 1, 1, 250, 150, 120, 50))
+			myvote=-1;
+		if(areColliding(mouseX, mouseY, 1, 1, 480, 150, 120, 50))
+			myvote=1;
 
-				socket.emit('joined_room', room);
-				//player position
-				socket.on('player_position'+room,function (id,x,y,dir){
-				playerPositionsX[id]=x;
-				playerPositionsY[id]=y;
-				playerDirection[id]=dir;
-				})
-				//color
-				socket.on('score'+room,function (id,score){
-				scores[id]=score;
-				})
-				//color
-				socket.on('color'+room,function (id,color){
-				colors[id]=color;
-				})
-				
-				//ghost positions
-				socket.on('ghost_position'+room,function (id,x, y){
-					ghostPositionsX[id]=x;
-					ghostPositionsY[id]=y;
-				})
-			}
-		}
+	socket.emit('vote', myvote);    
+		
+		// mainMenu=false
+
+
 	}
-
 }
