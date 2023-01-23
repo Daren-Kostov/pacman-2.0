@@ -7,6 +7,7 @@ const MIN_VOTES=1;
 
 
 
+
 let allMaps=[];
 let i=0
 
@@ -96,6 +97,8 @@ let myscore=0, mycolor="hsl("+(Math.random()*360)+", 100%, 50%)";
 // console.log(mycolor)
 let myX = 100, myY = 100, direction=0;
 let myvote=0
+
+let scoreRefill=0;
 
 
 let ffa=false;
@@ -218,7 +221,13 @@ function update() {
 	
 	}else{
 		protection--;
-	
+		scoreRefill++;
+
+		if(scoreRefill>1000){
+			myscore+=1
+			scoreRefill=0;
+		}
+		
 	switch(direction){
 		case 0:
 			myY-=speed;
