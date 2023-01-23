@@ -47,6 +47,12 @@ app.get('/game.js', function(req, res){
     res.sendFile(__dirname + "/game.js");
 });
 
+
+let mapAmount=1;
+let chosenMap=Math.floor(Math.random()*mapAmount);
+
+
+
 let id=0
 
 io.on("connection", function(socket){
@@ -57,24 +63,28 @@ console.log("Player "+id+" joined at port "+port)
 
     //player positions
         socket.on('player_position',function(x, y, direction){
-        io.emit('player_position', id1, x, y, direction)  
+            io.emit('player_position', id1, x, y, direction)  
         })
     //player scores
         socket.on('score',function(score){
-        io.emit('score',id1,score)  
+            io.emit('score',id1,score)  
         })
         
     //player colors
         socket.on('color',function(color){
-        io.emit('color',id1, color)  
+            io.emit('color',id1, color)  
         })
     //player vote
         socket.on('vote',function(vote){
-        io.emit('vote',id1, vote)  
+            io.emit('vote',id1, vote)  
         })
     //ghost positions
         socket.on('ghost_position',function(x, y){
-        io.emit('ghost_position',id1, x, y)  
+            io.emit('ghost_position',id1, x, y)  
+        })
+    //map
+        socket.on('map',function(){
+            io.emit('map', chosenMap)  
         })
 
         id++;
