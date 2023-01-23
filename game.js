@@ -23,8 +23,6 @@ let map=[
   [1,2,1,2,1,1,1,2,1,1,1,1,1,2,1,1,1,2,1,2,1],
   [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-  //3 is the box in the middle
-  // map array 21 to 21
 ] 
 
 
@@ -54,8 +52,6 @@ setTimeout(genFloor, 500);
 
 
 
-let numberOfRooms=2
-let room//=Math.floor(Math.random()*2)
 
 
 
@@ -96,10 +92,14 @@ let dirDef=[
 
 //our score, coords, and speed, and color
 let myscore=0, mycolor="hsl("+(Math.random()*360)+", 100%, 50%)";
-console.log(mycolor)
+// console.log(mycolor)
 let myX = 100, myY = 100, direction=0;
 let myvote=0
 
+
+let ffa=false;
+let gameOver=false;
+let protection=500;
 
 //ONLY 1, 2, 3, 5, 10, 15, 30
 let Gspeed=5;
@@ -158,22 +158,28 @@ function update() {
 	if(mainMenu){
 
 		let votes=0;
-		let players=0
-		for(i=0;i<playerVote.length;i++){
-			if(!isNaN(playerVote[i]))
+		let players=0;//players who voted
+		for(i=0;i<playerVote.length;i++)
+			if(!isNaN(playerVote[i]) && playerVote[i]!=0){
 				votes+=playerVote[i];
 				players++;
-		}
+				}
+		
 
+				// console.log(players)
 		//at least 3 players have voted and the votes dont equalize
 		if(players>=3 && votes!=0){
 			mainMenu=false;
+			//if the votes say so set to ffa
+			if(votes<0)
+				ffa=true;
+			//if not dont change it (its already false)
 		}
 
 
 	
 	}else{
-		
+		protection--;
 	
 	switch(direction){
 		case 0:
@@ -255,11 +261,11 @@ function update() {
 	}
 	
 	//player-ghost collision
-		
-	for(var k=0;k<playerPositionsX.length;k+=1){
-		if(areColliding(ghostPositionsX[k], ghostPositionsY[k], 25, 25, myX, myY, 25, 25)){
-		myX=1000000000
-		}
+	if(protection<0)
+		for(var k=0;k<playerPositionsX.length;k+=1){
+			if(areColliding(ghostPositionsX[k], ghostPositionsY[k], 25, 25, myX, myY, 25, 25)){
+				myX=1000000000
+			}
 	}	
 		
 		
@@ -273,6 +279,23 @@ function update() {
 	socket.emit('ghost_position', myGhostX,myGhostY);
 	
 	}
+
+	//game over condition
+		let players=0
+		let playersOut=0;
+		//count all valid players and players that are out 
+		for(i=0;i<playerPositionsX.length;i++){
+			if(!isNaN(playerPositionsX[i])){
+				players++;
+				if(playerPositionsX[i]>10000)
+					playersOut++;
+			}
+		}
+		// console.log(players, playersOut)
+		if(playersOut==players && players!=0)
+			gameOver=true;
+
+	
 }
 
 
@@ -283,9 +306,11 @@ draw_block=[]
 context.globalCompositeOperation = "destination-over"
 function draw() {
 		
-	context.clearRect(0,0,1000,1000)
+	// context.clearRect(0,0,1000,1000)
   //when in main menu
 	if(mainMenu){
+		context.clearRect(0, 0, canvas.width, canvas.height);
+
 		let votes=0;
 		for(i=0;i<playerVote.length;i++){
 			if(!isNaN(playerVote[i]))
@@ -321,8 +346,9 @@ function draw() {
 
 
 		
-	//when not in main menu
-	}else{
+	//when not in main menu and the game is not over
+	}else if(gameOver==false){
+		context.clearRect(0, 0, canvas.width, canvas.height);
 	
 	
 		context.scale(mapSize,mapSize)
@@ -364,13 +390,15 @@ function draw() {
 		context.scale(1/mapSize,1/mapSize)
 
 		//draws background for the scores 
-		
-		//draws scores
-		for(var k=0;k<scores.length;k+=1){
-			context.fillStyle=colors[k]	
-			context.fillText("my score: "+ scores[k], 400, 100+25*(k+1))
-		}
-		if(room>numberOfRooms/2-1){//if co-op
+
+		if(ffa){//if ffa
+			//draws scores
+			for(var k=0;k<scores.length;k+=1){
+				context.fillStyle=colors[k]	
+				context.fillText("score: "+ scores[k], 400, 100+25*(k))
+			}
+		}else{//if co-op
+			//draw global score
 			let sumScore=0
 			for(var k=0;k<scores.length;k+=1)
 				sumScore+=scores[k];
@@ -386,8 +414,54 @@ function draw() {
 			context.fillStyle="#000"
 		context.fillText(tps, 400, 50)
 		context.fillText(fps, 450, 50)
-		context.fillText(room, 500, 50)
 	
+	}else{
+		
+			context.globalCompositeOperation = "source-over";
+		
+			context.globalAlpha=0.1;
+			context.fillStyle="#000";
+			context.fillRect(0, 0, 2000, 1000);
+			context.globalAlpha=1;
+
+
+		
+		if(ffa){//of ffa
+
+			//1st index/player
+			let highestScoreIndex=0;
+
+
+			for(var k=0;k<scores.length;k+=1)
+				if(scores[highestScoreIndex]<scores[k])
+					highestScoreIndex=k;
+				
+			
+
+			context.font="30px Arial"
+			for(var k=0;k<scores.length;k+=1){
+				context.fillStyle=colors[k]	
+				context.fillText("score: "+ scores[k], 100, 100+50*(k+1))
+			}
+		
+
+				context.font="40px Arial"
+				context.fillStyle=colors[highestScoreIndex]	
+				context.fillText("score: "+ scores[highestScoreIndex], 90, 70)
+			
+		}else{//if co-op
+		
+			let sumScore=0
+			for(var k=0;k<scores.length;k+=1)
+				sumScore+=scores[k];
+				
+			context.font="40px Arial"
+			context.fillStyle="#fff"	
+			context.fillText("Global score: "+ sumScore, 90, 100)
+			
+		
+		
+		}
 	}
 	
 	
@@ -401,7 +475,7 @@ function setDirection(d, i){
 }
 
 function keydown(key) {
-	console.log("Pressed", key);
+	// console.log("Pressed", key);
 	switch(key){
 		case 87:
 			setDirection(0, mvimp)
@@ -422,8 +496,8 @@ function keydown(key) {
 
 
 function pointerup(){
-	console.log(mouseX)
-	console.log(mouseY)
+	// console.log(mouseX)
+	// console.log(mouseY)
 	if(mainMenu){
 		if(areColliding(mouseX, mouseY, 1, 1, 250, 150, 120, 50))
 			myvote=-1;

@@ -13,8 +13,8 @@
 
           
 var canvas = document.getElementById("canvas-id");
-canvas.width  = window.innerWidth
-canvas.height = window.innerHeight
+canvas.width  = 2000;//window.innerWidth
+canvas.height = 900;//window.innerHeight
 var context = canvas.getContext("2d");
 
    
@@ -227,7 +227,7 @@ function init() {
 
 	if(typeof draw == "undefined")
 		redraw = function() {
-			context.clearRect(0, 0, canvas.width, canvas.height);
+			// context.clearRect(0, 0, canvas.width, canvas.height);
 			context.globalAlpha = 1;
 			context.fillStyle = "#FF0000";
 			context.font = "30px Arial";

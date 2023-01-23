@@ -22,6 +22,7 @@ process.argv.forEach(function (val, index, array) {
 
 
 
+
 app.get('/', function(req, res){
     res.sendFile(__dirname + "/start.html");
 });
