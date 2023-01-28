@@ -1,7 +1,7 @@
 var socket = io();
 
 
-const MIN_VOTES=1;
+const MIN_VOTES=2;
 
 
 
@@ -223,7 +223,7 @@ function update() {
 		protection--;
 		scoreRefill++;
 
-		if(scoreRefill>1000){
+		if(scoreRefill>1000 && myX<10000){
 			myscore+=1
 			scoreRefill=0;
 		}
